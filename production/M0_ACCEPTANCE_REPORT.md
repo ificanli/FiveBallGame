@@ -1,7 +1,7 @@
 # M0 acceptance report
 
 Date: 2026-08-17  
-Result: **VERIFYING — local technical gate passed; remote CI and commit identity remain blocked.**
+Result: **VERIFYING — local technical gate passed; remote CI and author-identity confirmation remain open.**
 
 ## Completed
 
@@ -47,7 +47,7 @@ git check-attr filter -- assets/example.png
 ## Remaining risks / blockers
 
 - Cloud CI has not run because no Git remote is configured.
-- A legitimate initial commit cannot be made until repository author identity exists; no identity was fabricated.
+- Initial commit `adb6e73` exists, but Git auto-derived `unknown <luxinyu@q1oa.com>` because no explicit identity was configured. Confirm or amend before push.
 - Linux executable startup still needs a Linux runner/host.
 - Machine checks prove tooling reproducibility only. They say nothing about gameplay quality.
 

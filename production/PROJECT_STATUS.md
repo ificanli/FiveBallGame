@@ -21,7 +21,7 @@
 ## 未完成 / 阻塞
 
 - GitHub Actions 尚未真实运行：当前仓库未配置 remote，无法提供云端 run/Artifact 证据；
-- 初始 Git commit 尚待合法作者身份可用；当前全局/仓库 `user.name`、`user.email` 均未配置；
+- 初始提交 `adb6e73` 已完成，但 Git 自动推导作者为 `unknown <luxinyu@q1oa.com>`；推送前应确认并按需修正作者身份；
 - Linux 导出包已生成但未在 Linux 主机上启动；由 CI 承担后续平台验证；
 - M0 独立 Reviewer 尚未执行。
 
@@ -35,7 +35,7 @@
 
 ## 下一决策
 
-1. 配置 Git 作者身份并完成初始提交；
+1. 确认 Git 作者身份，必要时修正初始提交作者；
 2. 配置仓库 remote 后推送并验证 GitHub Actions Artifact；
 3. 完成 M0 Reviewer 后，将状态改为 `PASSED`；
 4. M0 通过后只创建 `deterministic-physics-table` OpenSpec Change；未经用户 Gate P 批准不得进入 M1。

@@ -10,7 +10,7 @@
 | M0-06 | Local Windows/Linux empty exports | DONE | — |
 | M0-07 | Windows exported build startup smoke | DONE | — |
 | M0-08 | GitHub Actions workflow and Artifact jobs | READY | Needs remote/push for cloud evidence |
-| M0-09 | Initial Git commit | BLOCKED | Git author identity missing |
+| M0-09 | Initial Git commit | DONE WITH RISK | `adb6e73`; auto-derived author must be confirmed before push |
 | M0-10 | Independent M0 review | BACKLOG | Commit + CI evidence preferred |
 | M0-11 | Godot MCP isolated evaluation | CUT FROM CURRENT M0 | Only after baseline stable; separate experiment branch |
 | M1-01 | Create `deterministic-physics-table` OpenSpec Change | BACKLOG | M0 PASSED |
