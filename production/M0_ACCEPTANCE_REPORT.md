@@ -1,7 +1,7 @@
 # M0 acceptance report
 
 Date: 2026-08-17  
-Result: **VERIFYING — local technical gate passed; remote CI and author-identity confirmation remain open.**
+Result: **VERIFYING — local technical gate and remote CI passed; author-identity confirmation and independent review remain open.**
 
 ## Completed
 
@@ -14,7 +14,7 @@ Result: **VERIFYING — local technical gate passed; remote CI and author-identi
 - Matching 4.7.1 export templates installed locally; Windows and Linux empty builds exported.
 - Export boundary excludes tests, tools, docs, status, OpenSpec, reports, and addons.
 - Exported Windows executable starts in headless mode with exit 0.
-- CI definition runs import, GdUnit4, Golden contract, startup smoke, and matrix exports with artifacts.
+- CI runs import, GdUnit4, Golden contract, startup smoke, and matrix exports; GitHub Actions run `32018118216` completed successfully.
 - No gameplay physics, content batch, networking, Steamworks, or MCP was introduced.
 
 ## Evidence commands
@@ -46,8 +46,8 @@ git check-attr filter -- assets/example.png
 
 ## Remaining risks / blockers
 
-- Cloud CI has not run because no Git remote is configured.
-- Initial commit `adb6e73` exists, but Git auto-derived `unknown <luxinyu@q1oa.com>` because no explicit identity was configured. Confirm or amend before push.
+- Remote is `https://github.com/ificanli/FiveBallGame.git`; `main` and eight LFS objects were pushed successfully.
+- Initial commit `adb6e73` exists, but Git auto-derived `unknown <luxinyu@q1oa.com>` because no explicit identity was configured. Confirm future identity and amend history only if desired.
 - Linux executable startup still needs a Linux runner/host.
 - Machine checks prove tooling reproducibility only. They say nothing about gameplay quality.
 
