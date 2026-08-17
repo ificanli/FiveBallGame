@@ -2,8 +2,10 @@
 
 更新时间：2026-08-17  
 当前阶段：PREPRODUCTION / TOOLING  
-主里程碑：M0 工具链与正式仓库  
-里程碑状态：VERIFYING
+主里程碑：M1 确定性物理技术桌（规格阶段）  
+里程碑状态：PLANNING
+
+上一里程碑：M0 工具链与正式仓库 — `PASSED`
 
 ## 已完成
 
@@ -18,11 +20,11 @@
 - 权威规划与历史资料已复制并记录来源；
 - 未开发正式物理、内容、Steamworks、联网或 MCP。
 
-## 未完成 / 阻塞
+## 当前进行中 / 阻塞
 
-- 初始提交 `adb6e73` 已完成并已推送，但 Git 自动推导作者为 `unknown <luxinyu@q1oa.com>`；应确认后续提交身份，并按需修正历史作者；
-- Linux 导出包已生成但未在 Linux 主机上启动；由 CI 承担后续平台验证；
-- M0 独立 Reviewer 尚未执行。
+- OpenSpec Change `deterministic-physics-table` 的 proposal、4 份 specs、design、tasks 已完成并通过 strict validation；
+- M1 当前等待用户 Gate P 审核，未经明确批准不得实现；
+- Linux 导出包已生成但未在 Linux 桌面手动启动；不阻塞 M0，后续由跨平台 CI smoke 补强。
 
 ## 当前证据
 
@@ -30,10 +32,11 @@
 - `reports/gdunit.log`：2 cases / 0 failures；
 - `reports/export-retry.log`：Windows/Linux export exit 0；
 - `reports/m0-final-checks.log`：Windows build startup、OpenSpec doctor、LFS 与敏感文件审计；
-- `production/M0_ACCEPTANCE_REPORT.md`：完整验收摘要。
+- `production/M0_ACCEPTANCE_REPORT.md`：完整验收摘要；
+- `production/M0_INDEPENDENT_REVIEW.md`：基于远端干净 clone 的独立复验，结论 `PASS_ENGINEERING`。
 
 ## 下一决策
 
-1. 确认 Git 作者身份，必要时修正已有提交作者；
-2. 完成 M0 Reviewer 后，将状态改为 `PASSED`；
-3. M0 通过后只创建 `deterministic-physics-table` OpenSpec Change；未经用户 Gate P 批准不得进入 M1。
+1. 用户审核 `deterministic-physics-table` 的范围、规格、设计与任务；
+2. 若需修改，先更新 Change 并重新 strict validation；
+3. 只有用户明确批准 Gate P 后才进入 M1 实现。

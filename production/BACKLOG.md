@@ -11,8 +11,8 @@
 | M0-07 | Windows exported build startup smoke | DONE | — |
 | M0-08 | GitHub Actions workflow and Artifact jobs | DONE | Run `32018118216` success |
 | M0-09 | Initial Git commit | DONE WITH RISK | `adb6e73`; auto-derived author must be confirmed before push |
-| M0-10 | Independent M0 review | BACKLOG | Commit + CI evidence preferred |
+| M0-10 | Independent M0 review | DONE | Fresh clone review: `PASS_ENGINEERING` |
 | M0-11 | Godot MCP isolated evaluation | CUT FROM CURRENT M0 | Only after baseline stable; separate experiment branch |
-| M1-01 | Create `deterministic-physics-table` OpenSpec Change | BACKLOG | M0 PASSED |
-| M1-02 | Gate P review of M1 proposal/spec/design/tasks | BACKLOG | Explicit user approval |
+| M1-01 | Create `deterministic-physics-table` OpenSpec Change | DONE | 4/4 artifacts; strict validation passed |
+| M1-02 | Gate P review of M1 proposal/spec/design/tasks | IN_REVIEW | Explicit user approval required |
 | M1-03 | Implement deterministic physics table | BLOCKED | M1-02 |

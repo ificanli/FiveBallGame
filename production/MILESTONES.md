@@ -2,7 +2,7 @@
 
 ## M0 — Toolchain and production repository
 
-Status: `VERIFYING`  
+Status: `PASSED`  
 Goal: establish a reproducible Godot production baseline without gameplay implementation.
 
 MUST: Godot lock, Git/LFS, OpenSpec, GdUnit4, headless smoke, Golden Replay contract, Windows/Linux empty export, CI definition, persistent project status.  
@@ -12,7 +12,7 @@ Pass gate: all local evidence passes; cloud CI produces both artifacts after rem
 
 ## M1 — Deterministic physics table
 
-Status: `BACKLOG / NOT APPROVED FOR IMPLEMENTATION`
+Status: `PLANNING / NOT APPROVED FOR IMPLEMENTATION`
 
 Entry gate: approved OpenSpec change `deterministic-physics-table`. No code before explicit Gate P approval.
 
