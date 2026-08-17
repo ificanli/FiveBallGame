@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "case_id": "m0-contract-smoke",
+  "description": "M0 data-contract placeholder; no physics is simulated.",
+  "input": {
+    "physics_version": "unimplemented-m0",
+    "content_version": "m0",
+    "seed": 20260817,
+    "initial_snapshot": { "balls": [] },
+    "shot_input": null
+  },
+  "expected": {
+    "status": "contract_loaded",
+    "events": [],
+    "final_ball_states": [],
+    "state_hash": null,
+    "ticks": 0
+  }
+}

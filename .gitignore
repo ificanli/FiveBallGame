@@ -1,0 +1,28 @@
+# Godot generated/editor state
+.godot/
+.import/
+export.cfg
+
+# Build outputs
+builds/*
+!builds/.gitkeep
+reports/
+
+# Local tools and secrets
+.env
+.env.*
+!.env.example
+*.pck
+*.key
+*.pem
+*.pfx
+*.keystore
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# GdUnit generated reports/logs
+addons/gdUnit4/.gdunit4/

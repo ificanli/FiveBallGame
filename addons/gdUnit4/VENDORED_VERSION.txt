@@ -1,0 +1,4 @@
+gdUnit4 commit: d18770221c2df4a3c991a42fdce7907df40eea75
+gdUnit4 tag: v6.2.0
+source: https://github.com/godot-gdunit-labs/gdUnit4
+license: MIT (see LICENSE)
