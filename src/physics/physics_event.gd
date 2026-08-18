@@ -34,6 +34,22 @@ static func rail_collision(event_tick: int, ball_id: int, rail_name: String, con
 	return event
 
 
+static func wall_collision(event_tick: int, ball_id: int, wall_id: int, contact_point: Vector2) -> PhysicsEvent:
+	var event := PhysicsEvent.new("wall_collision", event_tick)
+	event.primary_id = ball_id
+	event.secondary_id = wall_id
+	event.point = contact_point
+	return event
+
+
+static func rule_event(event_type: String, event_tick: int, ball_id: int, wall_id: int = 0, event_data: Dictionary = {}) -> PhysicsEvent:
+	var event := PhysicsEvent.new(event_type, event_tick)
+	event.primary_id = ball_id
+	event.secondary_id = wall_id
+	event.data = event_data.duplicate(true)
+	return event
+
+
 func to_dict() -> Dictionary:
 	return {
 		"tick": tick,

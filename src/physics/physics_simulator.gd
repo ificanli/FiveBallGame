@@ -17,6 +17,7 @@ func simulate(initial: TableSnapshot, shot: ShotInput, config: PhysicsConfig = n
 		result.status = "error"
 		result.error = {"code": "invalid_cue_ball_id", "id": shot.cue_ball_id}
 		return result
+	WallEffectResolver.new().reset_for_new_shot(state)
 	cue.velocity = shot.direction * used_config.power_speed(shot.power_level)
 	return _run(state, used_config)
 
@@ -63,12 +64,15 @@ func step_tick(state: TableSnapshot, config: PhysicsConfig, tick: int, events: A
 	var sub_delta := config.fixed_delta / float(substeps)
 	var pair_contacts := {}
 	var rail_contacts := {}
+	var wall_contacts := {}
+	var resolver := WallEffectResolver.new()
 	for substep in substeps:
 		for ball: BallState in state.balls:
 			ball.position += ball.velocity * sub_delta
 		_resolve_rails(state, config, tick, events, rail_contacts)
+		_resolve_internal_walls(state, config, tick, events, wall_contacts, resolver)
 		for _iteration in 2:
-			_resolve_ball_pairs(state, config, tick, events, pair_contacts)
+			_resolve_ball_pairs(state, config, tick, events, pair_contacts, resolver)
 	for ball: BallState in state.balls:
 		ball.velocity *= config.drag_per_tick
 		if ball.velocity.length() < config.stop_speed:
@@ -93,7 +97,8 @@ func _resolve_ball_pairs(
 	config: PhysicsConfig,
 	tick: int,
 	events: Array,
-	contacts: Dictionary
+	contacts: Dictionary,
+	resolver: WallEffectResolver
 ) -> void:
 	var candidates := _collect_pair_candidates(state)
 	for pair: Array in candidates:
@@ -120,7 +125,9 @@ func _resolve_ball_pairs(
 		var key := "%d:%d" % [first.id, second.id]
 		if not contacts.has(key):
 			contacts[key] = true
-			events.append(PhysicsEvent.ball_collision(tick, first.id, second.id, (first.position + second.position) * 0.5))
+			var event := PhysicsEvent.ball_collision(tick, first.id, second.id, (first.position + second.position) * 0.5)
+			events.append(event)
+			resolver.process_event(state, event, events)
 
 
 func _collect_pair_candidates(state: TableSnapshot) -> Array[Array]:
@@ -150,6 +157,58 @@ func _collect_pair_candidates(state: TableSnapshot) -> Array[Array]:
 		return left_second.id < right_second.id
 	)
 	return candidates
+
+
+func _resolve_internal_walls(
+	state: TableSnapshot,
+	config: PhysicsConfig,
+	tick: int,
+	events: Array,
+	contacts: Dictionary,
+	resolver: WallEffectResolver
+) -> void:
+	var ordered_balls := state.balls.duplicate()
+	ordered_balls.sort_custom(func(left: BallState, right: BallState) -> bool: return left.id < right.id)
+	var ordered_walls := state.walls.duplicate()
+	ordered_walls.sort_custom(func(left: WallState, right: WallState) -> bool: return left.id < right.id)
+	for ball: BallState in ordered_balls:
+		for wall: WallState in ordered_walls:
+			var closest := Vector2(
+				clampf(ball.position.x, wall.rect.position.x, wall.rect.end.x),
+				clampf(ball.position.y, wall.rect.position.y, wall.rect.end.y)
+			)
+			var delta := ball.position - closest
+			if delta.length_squared() >= ball.radius * ball.radius:
+				continue
+			var normal := _wall_normal(ball, wall, delta)
+			var distance := delta.length()
+			ball.position += normal * (ball.radius - distance + POSITION_EPSILON)
+			var normal_speed := ball.velocity.dot(normal)
+			if normal_speed < 0.0:
+				ball.velocity -= normal * (1.0 + config.rail_restitution) * normal_speed
+			var key := "%d:%d" % [ball.id, wall.id]
+			if not contacts.has(key):
+				contacts[key] = true
+				var event := PhysicsEvent.wall_collision(tick, ball.id, wall.id, closest)
+				events.append(event)
+				resolver.process_event(state, event, events)
+
+
+func _wall_normal(ball: BallState, wall: WallState, delta: Vector2) -> Vector2:
+	if delta.length_squared() > POSITION_EPSILON * POSITION_EPSILON:
+		return delta.normalized()
+	var distances := [
+		{"distance": absf(ball.position.x - wall.rect.position.x), "normal": Vector2.LEFT, "order": 0},
+		{"distance": absf(wall.rect.end.x - ball.position.x), "normal": Vector2.RIGHT, "order": 1},
+		{"distance": absf(ball.position.y - wall.rect.position.y), "normal": Vector2.UP, "order": 2},
+		{"distance": absf(wall.rect.end.y - ball.position.y), "normal": Vector2.DOWN, "order": 3},
+	]
+	distances.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		if not is_equal_approx(left.distance, right.distance):
+			return left.distance < right.distance
+		return left.order < right.order
+	)
+	return distances[0].normal
 
 
 func _resolve_rails(

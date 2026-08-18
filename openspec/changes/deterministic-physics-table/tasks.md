@@ -24,12 +24,12 @@
 
 ## 4. Activation and function-wall slice
 
-- [ ] 4.1 Add failing tests for cue-to-number activation, number-to-number propagation, stable activation source/order, and non-active wall impacts.
-- [ ] 4.2 Implement per-shot activation causality from ordered physical contact events.
-- [ ] 4.3 Add failing tests for charged/exhausted copy walls, cue-ball exclusion, actual-impacting-ball ownership, and per-shot charge reset.
-- [ ] 4.4 Implement copy-wall result events without spawning a physical ball or introducing hand/combo rules.
-- [ ] 4.5 Add failing tests for dye-wall ball-ID targeting, number preservation, multiple active balls, cue-ball exclusion, and color state serialization.
-- [ ] 4.6 Implement dye-wall state changes and structured old/new color events for the actual impacting active ball.
+- [x] 4.1 Add failing tests for cue-to-number activation, number-to-number propagation, stable activation source/order, and non-active wall impacts.
+- [x] 4.2 Implement per-shot activation causality from ordered physical contact events.
+- [x] 4.3 Add failing tests for charged/exhausted copy walls, cue-ball exclusion, actual-impacting-ball ownership, and per-shot charge reset.
+- [x] 4.4 Implement copy-wall result events without spawning a physical ball or introducing hand/combo rules.
+- [x] 4.5 Add failing tests for dye-wall ball-ID targeting, number preservation, multiple active balls, cue-ball exclusion, and color state serialization.
+- [x] 4.6 Implement dye-wall state changes and structured old/new color events for the actual impacting active ball.
 
 ## 5. Shot input and shared-source prediction
 
