@@ -44,21 +44,21 @@ jobs:
           Expand-Archive godot.zip C:\Godot -Force
           Move-Item C:\Godot\Godot_v4.7.1-stable_win64.exe C:\Godot\godot.exe -Force
       - name: Import project
-        run: ${{ matrix.godot }} --headless --editor --path . --quit
+        run: ${{ matrix.godot }} --headless --editor --path "${{ github.workspace }}" --quit
       - name: GdUnit4
-        run: ${{ matrix.godot }} --path . -s -d --headless res://addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add tests/unit
+        run: ${{ matrix.godot }} --path "${{ github.workspace }}" -s -d --headless res://addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add tests/unit
       - name: Prepare replay output
         run: python -c "import os; os.makedirs('replay-output', exist_ok=True)"
       - name: Golden Replay 100-repeat
-        run: ${{ matrix.godot }} --headless --path . --script res://tools/golden_replay_runner.gd -- --repeat 100 --output res://replay-output/${{ matrix.replay }}
+        run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --script res://tools/golden_replay_runner.gd -- --repeat 100 --output res://replay-output/${{ matrix.replay }}
       - name: Core-loop session replay 100-repeat
-        run: ${{ matrix.godot }} --headless --path . --script res://tools/core_loop_replay_runner.gd -- --repeat 100 --output res://replay-output/core-${{ matrix.replay }}
+        run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --script res://tools/core_loop_replay_runner.gd -- --repeat 100 --output res://replay-output/core-${{ matrix.replay }}
       - name: Physics stress
-        run: ${{ matrix.godot }} --headless --path . --script res://tools/physics_stress.gd
+        run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --script res://tools/physics_stress.gd
       - name: Core-loop stress
-        run: ${{ matrix.godot }} --headless --path . --script res://tools/core_loop_stress.gd
+        run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --script res://tools/core_loop_stress.gd
       - name: Technical-table startup smoke
-        run: ${{ matrix.godot }} --headless --path . --quit-after 2
+        run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --quit-after 2
       - name: Upload normalized replay output
         uses: actions/upload-artifact@v4
         with:
