@@ -6,11 +6,20 @@ import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--output", required=True)
+parser.add_argument("--input")
 args = parser.parse_args()
 
+if args.input:
+    raw = pathlib.Path(args.input).read_bytes()
+    if raw.startswith((b"\xff\xfe", b"\xfe\xff")) or raw.count(b"\x00") > len(raw) // 4:
+        text = raw.decode("utf-16", errors="replace")
+    else:
+        text = raw.decode("utf-8", errors="replace")
+    lines = text.splitlines()
+else:
+    lines = (line.decode("utf-8", errors="replace").rstrip("\r\n") for line in sys.stdin.buffer)
 payload = None
-for raw_line in sys.stdin.buffer:
-    line = raw_line.decode("utf-8", errors="replace").rstrip("\r\n")
+for line in lines:
     print(line)
     try:
         candidate = json.loads(line)
