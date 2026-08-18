@@ -14,5 +14,5 @@
 | M0-10 | Independent M0 review | DONE | Fresh clone review: `PASS_ENGINEERING` |
 | M0-11 | Godot MCP isolated evaluation | CUT FROM CURRENT M0 | Only after baseline stable; separate experiment branch |
 | M1-01 | Create `deterministic-physics-table` OpenSpec Change | DONE | 4/4 artifacts; strict validation passed |
-| M1-02 | Gate P review of M1 proposal/spec/design/tasks | IN_REVIEW | Explicit user approval required |
-| M1-03 | Implement deterministic physics table | BLOCKED | M1-02 |
+| M1-02 | Gate P review of M1 proposal/spec/design/tasks | DONE | User approved 2026-08-17 |
+| M1-03 | Implement deterministic physics table | HUMAN_QA | 40/44 tasks; engineering review passed |

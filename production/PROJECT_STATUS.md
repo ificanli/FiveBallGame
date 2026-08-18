@@ -3,7 +3,7 @@
 更新时间：2026-08-17  
 当前阶段：PREPRODUCTION / TOOLING  
 主里程碑：M1 确定性物理技术桌  
-里程碑状态：BUILDING
+里程碑状态：VERIFYING / HUMAN_QA
 
 上一里程碑：M0 工具链与正式仓库 — `PASSED`
 
@@ -24,7 +24,7 @@
 
 - OpenSpec Change `deterministic-physics-table` 已于 2026-08-17 通过用户 Gate P；
 - feature 分支、批准基线、网页原型 10 条对照清单、版本化回放契约与纯数据模型已完成；
-- 当前 OpenSpec 进度：38/44 tasks；GdUnit4 51/51 通过；
+- 当前 OpenSpec 进度：40/44 tasks；GdUnit4 51/51 通过；
 - 固定 Seed 技术桌、规则快照表现适配、鼠标瞄准、五档力度、三档辅助、同 Seed 重置、调试覆盖与墙体反馈已接入；
 - 五档输入和简洁/标准/完整同源预测完成；Headless 无缓存平均约 5.95/17.49/39.30 ms；
 - 固定步长、动态子步、摩擦/停止、圆—圆与圆—库边碰撞完成；700 次最大力度密集压力运行无漂移/非有限/残留重叠；
@@ -41,6 +41,6 @@
 
 ## 下一决策
 
-1. 等待远端 Windows/Linux CI、跨平台 Golden 比对与 Linux 导出包启动证据；
-2. 完成干净 clone 双平台导出与真实可视/输入检查；
-3. 完成网页对照、真人手感门与独立验收。
+1. 用户运行 Windows 技术桌，完成五档力度、三档辅助、复制/染色、重置和收杆节奏检查；
+2. 按 `docs/WEB_PROTOTYPE_PHYSICS_REFERENCE.md` 完成网页原型手感对照；
+3. 将真人结论写入 Gate I，完成 8.4–8.7；未通过则先调参/修正，不进入 M2。
