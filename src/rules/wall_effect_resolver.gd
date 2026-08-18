@@ -23,14 +23,14 @@ func _process_ball_collision(state: TableSnapshot, event: PhysicsEvent, output: 
 	var second := state.find_ball(event.secondary_id)
 	if first == null or second == null:
 		return
-	if first.kind == "cue" and second.kind == "number":
+	if first.kind == "cue" and second.kind == "number" and not state.rule_ineligible_ball_ids.has(second.id):
 		_activate(second, first.id, event.tick, output)
-	elif second.kind == "cue" and first.kind == "number":
+	elif second.kind == "cue" and first.kind == "number" and not state.rule_ineligible_ball_ids.has(first.id):
 		_activate(first, second.id, event.tick, output)
 	elif first.kind == "number" and second.kind == "number":
-		if first.active and not second.active:
+		if first.active and not second.active and not state.rule_ineligible_ball_ids.has(second.id):
 			_activate(second, first.id, event.tick, output)
-		elif second.active and not first.active:
+		elif second.active and not first.active and not state.rule_ineligible_ball_ids.has(first.id):
 			_activate(first, second.id, event.tick, output)
 
 
@@ -45,7 +45,7 @@ func _activate(ball: BallState, source_id: int, tick: int, output: Array) -> voi
 func _process_wall_collision(state: TableSnapshot, event: PhysicsEvent, output: Array) -> void:
 	var ball := state.find_ball(event.primary_id)
 	var wall := _find_wall(state, event.secondary_id)
-	if ball == null or wall == null or ball.kind != "number" or not ball.active:
+	if ball == null or wall == null or ball.kind != "number" or not ball.active or state.rule_ineligible_ball_ids.has(ball.id):
 		return
 	if wall.kind == "copy" and wall.charge > 0:
 		wall.charge -= 1

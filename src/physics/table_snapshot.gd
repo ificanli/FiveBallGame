@@ -11,6 +11,8 @@ var revision: int
 var bounds: Rect2
 var balls: Array[BallState] = []
 var walls: Array[WallState] = []
+# Runtime-only M2 eligibility. Excluded from M1 serialization and Golden hashes.
+var rule_ineligible_ball_ids: Dictionary = {}
 
 
 func _init() -> void:
@@ -42,7 +44,9 @@ static func create_seeded_technical_table(table_seed: int) -> TableSnapshot:
 
 
 func duplicate_state() -> TableSnapshot:
-	return TableSnapshot.from_dict(to_dict())
+	var copy := TableSnapshot.from_dict(to_dict())
+	copy.rule_ineligible_ball_ids = rule_ineligible_ball_ids.duplicate()
+	return copy
 
 
 func find_ball(ball_id: int) -> BallState:

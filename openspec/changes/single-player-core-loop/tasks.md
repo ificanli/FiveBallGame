@@ -6,33 +6,33 @@
 
 ## 2. Core rule data model
 
-- [ ] 2.1 Write failing GdUnit4 tests for three-state lifecycle transitions, stable physical IDs, non-repeat collection, and retained physical collisions.
-- [ ] 2.2 Implement serializable collection state, hand slot, core-loop snapshot, wall charge, rule version, and explicit phase data without Godot scene-node references.
-- [ ] 2.3 Implement canonical serialization, validation, cloning, and stable hashing for core-loop snapshots, including nullable physical IDs for copy slots.
-- [ ] 2.4 Add tests rejecting duplicate physical-slot ownership, more than five persisted slots, invalid phase/command combinations, non-finite values, and inconsistent ball lifecycle state.
+- [x] 2.1 Write failing GdUnit4 tests for three-state lifecycle transitions, stable physical IDs, non-repeat collection, and retained physical collisions.
+- [x] 2.2 Implement serializable collection state, hand slot, core-loop snapshot, wall charge, rule version, and explicit phase data without Godot scene-node references.
+- [x] 2.3 Implement canonical serialization, validation, cloning, and stable hashing for core-loop snapshots, including nullable physical IDs for copy slots.
+- [x] 2.4 Add tests rejecting duplicate physical-slot ownership, more than five persisted slots, invalid phase/command combinations, non-finite values, and inconsistent ball lifecycle state.
 
 ## 3. Collection and wall-event reduction
 
-- [ ] 3.1 Write failing tests for cue collection, indirect activated collection, retained-hand reactivation on a later shot, waste-ball exclusion, and stable same-tick ordering.
-- [ ] 3.2 Implement the deterministic core-loop event reducer over M1 physical events, with per-shot activation provenance and idempotent event consumption.
-- [ ] 3.3 Write failing tests for copy slots with no physical ID, entity-to-slot dye synchronization, depleted wall behavior, and waste/cue/non-active wall contacts.
-- [ ] 3.4 Integrate copy and dye events into the reducer so slot, ball, charge, and provenance updates occur atomically while preserving M1 event output.
-- [ ] 3.5 Write and pass boundary tests where physical or copied sixth-slot acquisition causes immediate bust and all later rule effects in the moving shot are ignored.
+- [x] 3.1 Write failing tests for cue collection, indirect activated collection, retained-hand reactivation on a later shot, waste-ball exclusion, and stable same-tick ordering.
+- [x] 3.2 Implement the deterministic core-loop event reducer over M1 physical events, with per-shot activation provenance and idempotent event consumption.
+- [x] 3.3 Write failing tests for copy slots with no physical ID, entity-to-slot dye synchronization, depleted wall behavior, and waste/cue/non-active wall contacts.
+- [x] 3.4 Integrate copy and dye events into the reducer so slot, ball, charge, and provenance updates occur atomically while preserving M1 event output.
+- [x] 3.5 Write and pass boundary tests where physical or copied sixth-slot acquisition causes immediate bust and all later rule effects in the moving shot are ignored.
 
 ## 4. Best-combination evaluator and base score
 
-- [ ] 4.1 Add table-driven failing tests for single, pair, three of a kind, bomb, five-ball grand slam, and every three/four/five-slot straight, same-color, and same-color-straight multiplier.
-- [ ] 4.2 Implement versioned combo data and exhaustive candidate evaluation over at most five slots, including copy slots and duplicate-number straight handling.
-- [ ] 4.3 Add failing tests for pollution exclusion, overlapping candidates, equal-score tie breaks, slot-index stability, empty hands, and exact score arithmetic.
-- [ ] 4.4 Implement deterministic best-combination selection and score preview with explicit participant and pollution slot indices.
+- [x] 4.1 Add table-driven failing tests for single, pair, three of a kind, bomb, five-ball grand slam, and every three/four/five-slot straight, same-color, and same-color-straight multiplier.
+- [x] 4.2 Implement versioned combo data and exhaustive candidate evaluation over at most five slots, including copy slots and duplicate-number straight handling.
+- [x] 4.3 Add failing tests for pollution exclusion, overlapping candidates, equal-score tie breaks, slot-index stability, empty hands, and exact score arithmetic.
+- [x] 4.4 Implement deterministic best-combination selection and score preview with explicit participant and pollution slot indices.
 
 ## 5. Shot and post-shot state machine
 
-- [ ] 5.1 Write failing command/state tests for valid launch consumption, aim/cancel no-cost behavior, movement input lock, and per-shot activation/charge reset.
-- [ ] 5.2 Implement `AIMING`, `SIMULATING`, `POST_SHOT_DECISION`, `WON`, and `LOST` transitions with explicit rejected-command results.
-- [ ] 5.3 Write failing tests for atomic settlement, kept hands across shots, no-score empty shots, target-reaching victory, and terminal input lock.
-- [ ] 5.4 Implement settle and keep commands, including physical-hand-to-waste conversion, copy-slot disposal, score banking, and wall recharge at the next valid shot.
-- [ ] 5.5 Write and pass zero-stroke tests for final settlement, unavailable keep, empty/busted final-shot loss, and below-target loss after final settlement.
+- [x] 5.1 Write failing command/state tests for valid launch consumption, aim/cancel no-cost behavior, movement input lock, and per-shot activation/charge reset.
+- [x] 5.2 Implement `AIMING`, `SIMULATING`, `POST_SHOT_DECISION`, `WON`, and `LOST` transitions with explicit rejected-command results.
+- [x] 5.3 Write failing tests for atomic settlement, kept hands across shots, no-score empty shots, target-reaching victory, and terminal input lock.
+- [x] 5.4 Implement settle and keep commands, including physical-hand-to-waste conversion, copy-slot disposal, score banking, and wall recharge at the next valid shot.
+- [x] 5.5 Write and pass zero-stroke tests for final settlement, unavailable keep, empty/busted final-shot loss, and below-target loss after final settlement.
 
 ## 6. Multi-shot deterministic replay
 
