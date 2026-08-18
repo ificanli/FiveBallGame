@@ -1,9 +1,9 @@
 # 《五球满贯》Steam 项目状态
 
-更新时间：2026-08-17  
-当前阶段：M2 PLANNING
+更新时间：2026-08-18
+当前阶段：M2 HUMAN QA
 主里程碑：M2 单机核心闭环
-里程碑状态：PLANNING / GATE P REVIEW
+里程碑状态：HUMAN_QA
 
 上一里程碑：M0 工具链与正式仓库 — `PASSED`
 
@@ -39,16 +39,19 @@
 - `production/M0_ACCEPTANCE_REPORT.md`：完整验收摘要；
 - `production/M0_INDEPENDENT_REVIEW.md`：基于远端干净 clone 的独立复验，结论 `PASS_ENGINEERING`。
 
-## M2 规划状态
+## M2 当前状态
 
-- OpenSpec Change `single-player-core-loop` 已创建并完成 proposal/specs/design/tasks；
-- 严格校验通过，规划提交为 `1070630`，已推送 `origin/main`；
-- 范围覆盖碰撞收球、三态、五球槽、复制/染色槽位同步、最佳组合、结算/保留、六球爆仓及单桌教程胜负；
-- 明确 CUT 补球/道具、徽章/奖励、24 桌 Run、存档、Steamworks、PvP 与正式内容生产；
-- 当前停在 Gate P，尚未创建 feature 分支或编写 M2 实现代码。
+- Gate P 已批准；当前分支 `feature/single-player-core-loop`，批准回退点 `7d17737`；
+- 已实现碰撞收球、三态、五球槽、复制/染色槽位同步、唯一最佳组合、基础得分、结算/保留、六球爆仓、有限杆数、胜负与同配置重置；
+- 固定 Seed 教程桌已接入五档力度与三档辅助线；Windows 候选位于 `builds/windows/FiveBallGrandSlam.exe`；
+- GdUnit4 71/71；M2 8 类多杆回放 ×100；500 次压力会话；OpenSpec 严格校验全部通过；
+- 远端干净 clone 已完成 71/71、回放、Windows/Linux 导出和 Windows 候选启动；
+- CUT 系统未实现：补球/道具、徽章/奖励、24 桌 Run、存档、Steamworks、PvP、正式内容生产；
+- 远端 CI run `32184599980` 已触发，但匿名 API 限流导致最终结论尚待再次确认，不据此宣称通过；
+- 当前 OpenSpec 进度 37/41，剩余真人 15 分钟验收、问题修复/确认、状态交付与最终停门。
 
 ## 下一决策
 
-1. 用户审核 `openspec/changes/single-player-core-loop/`；
-2. 若 Gate P 批准，从提交 `1070630` 创建 `feature/single-player-core-loop` 并按 tasks 执行；
-3. 若组合倍率、爆仓时序或教程桌范围需要修改，先更新 Change 并重新严格校验，不得直接编码。
+1. 真人从 Windows 导出包连续试玩至少 15 分钟，并按 `production/M2_HUMAN_QA_CHECKLIST.md` 覆盖结算、保留、功能墙、爆仓、终态和重置；
+2. 若有阻塞或规则不符，回到 feature 分支修复并补回归；
+3. 真人通过且远端 CI 结论确认后，完成 Gate I 收尾；未获最终批准不得同步归档或合并 `main`。

@@ -1,6 +1,6 @@
 # M2 Gate I Engineering Review
 
-Status: `IN_PROGRESS` until CI and human QA complete.
+Status: `PASS_ENGINEERING_LOCAL / HUMAN_QA_REQUIRED`.
 
 ## Scope review
 
@@ -21,10 +21,16 @@ Implemented only approved M2: lifecycle, five slots, combo/score, wall-slot inte
 - Windows/Linux local export: exit 0.
 - Exported Windows candidate Headless startup: exit 0; `M2_TUTORIAL_READY` observed.
 - M1 test suites remain included in the 71-case run.
+- Seeded core-loop stress: 500 sessions across 20 Seeds × 5 powers × 5 repeats, zero drift/invalid/non-finite state.
+- OpenSpec strict validation passed.
+- Fresh remote clone at `e6c27bd`: 71/71 tests; 8 session classes × 100 repeats; Windows/Linux export exit 0; exported Windows startup observed `M2_TUTORIAL_READY`.
+- Scope and sensitive-file review found no CUT-system implementation or committed credential.
 
-## Remaining gates
+## Remote CI note
 
-- Core-loop seeded stress and final strict validation.
-- Remote Windows/Linux CI result and normalized output comparison.
-- Independent clean-clone review.
+Runs before `e6c27bd` proved both Windows and Linux verification commands green but repeatedly failed while transferring Windows replay files. Commit `e6c27bd` replaces fragile direct artifact output with a two-step persisted log capture. Run `32184599980` exists for that commit; its final conclusion must be rechecked after the anonymous GitHub API rate limit resets before CI is marked complete.
+
+## Remaining gate
+
 - Human exported-build session of at least 15 minutes.
+- Confirm final remote CI conclusion; if red, continue workflow repair without weakening verification.

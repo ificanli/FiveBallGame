@@ -55,8 +55,8 @@
 
 - [x] 8.1 Run the complete GdUnit4 suite and all M1/M2 replays Headless; fix failures without rewriting approved expected results to hide regressions.
 - [x] 8.2 Add seeded stress sessions covering dense chains, repeated keep decisions, same-tick collections, copy/dye sequences, repeated reset, and all five powers; assert finite values and valid states.
-- [ ] 8.3 Export Windows and Linux candidates from a clean clone, start the Windows export through the real entry point, and collect logs with no blocking errors.
-- [ ] 8.4 Perform an independent Gate I review against proposal/spec/design/tasks, including scope audit, test quality, sensitive-file scan, and rollback verification.
+- [x] 8.3 Export Windows and Linux candidates from a clean clone, start the Windows export through the real entry point, and collect logs with no blocking errors.
+- [x] 8.4 Perform an independent Gate I review against proposal/spec/design/tasks, including scope audit, test quality, sensitive-file scan, and rollback verification.
 - [x] 8.5 Prepare `production/M2_HUMAN_QA_CHECKLIST.md` with build commit and observable checks for collection, three states, wall ownership, best combo, settle, keep, bust, win/loss, and reset.
 
 ## 9. Human gate and delivery
