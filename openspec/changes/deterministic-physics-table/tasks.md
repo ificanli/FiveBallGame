@@ -14,13 +14,13 @@
 
 ## 3. Fixed-step motion and collision core
 
-- [ ] 3.1 Add failing tests for free motion, render-rate independence, friction decay, low-speed snap, smooth timeout termination, and exact shot-end detection.
-- [ ] 3.2 Implement the `1/120s` fixed-step loop, bounded deterministic substep calculation, friction, stop thresholds, low-speed finish, and maximum-duration finish.
-- [ ] 3.3 Add failing tests for direct, angled and glancing equal-mass circle collisions, initial-overlap correction, dense multi-ball contact, and maximum-power tunneling.
-- [ ] 3.4 Implement circle broad-phase candidate collection, stable contact keys, circle—circle impulse resolution, positional correction, finite-state guards, and fixed solver iterations.
-- [ ] 3.5 Add failing tests for perpendicular/angled rail impacts, adjacent-rail corner approaches, boundary containment, and independent rail restitution.
-- [ ] 3.6 Implement circle—rail collision and stable corner/contact ordering without using Godot physics bodies as rule truth.
-- [ ] 3.7 Run targeted stress tests and document whether bounded substeps meet tunneling and performance gates; if they fail, stop and propose time-of-impact scope instead of continuing.
+- [x] 3.1 Add failing tests for free motion, render-rate independence, friction decay, low-speed snap, smooth timeout termination, and exact shot-end detection.
+- [x] 3.2 Implement the `1/120s` fixed-step loop, bounded deterministic substep calculation, friction, stop thresholds, low-speed finish, and maximum-duration finish.
+- [x] 3.3 Add failing tests for direct, angled and glancing equal-mass circle collisions, initial-overlap correction, dense multi-ball contact, and maximum-power tunneling.
+- [x] 3.4 Implement circle broad-phase candidate collection, stable contact keys, circle—circle impulse resolution, positional correction, finite-state guards, and fixed solver iterations.
+- [x] 3.5 Add failing tests for perpendicular/angled rail impacts, adjacent-rail corner approaches, boundary containment, and independent rail restitution.
+- [x] 3.6 Implement circle—rail collision and stable corner/contact ordering without using Godot physics bodies as rule truth.
+- [x] 3.7 Run targeted stress tests and document whether bounded substeps meet tunneling and performance gates; if they fail, stop and propose time-of-impact scope instead of continuing.
 
 ## 4. Activation and function-wall slice
 

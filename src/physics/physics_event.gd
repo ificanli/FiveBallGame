@@ -26,6 +26,14 @@ static func ball_collision(event_tick: int, first_id: int, second_id: int, conta
 	return event
 
 
+static func rail_collision(event_tick: int, ball_id: int, rail_name: String, contact_point: Vector2) -> PhysicsEvent:
+	var event := PhysicsEvent.new("rail_collision", event_tick)
+	event.primary_id = ball_id
+	event.point = contact_point
+	event.data = {"rail": rail_name}
+	return event
+
+
 func to_dict() -> Dictionary:
 	return {
 		"tick": tick,
