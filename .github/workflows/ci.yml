@@ -61,9 +61,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: replay-${{ runner.os }}-${{ github.sha }}
-          path: |
-            ${{ matrix.replay }}
-            core-${{ matrix.replay }}
+          path: '*golden-*.json'
           if-no-files-found: error
 
   compare-replays:
