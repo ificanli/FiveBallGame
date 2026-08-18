@@ -1,0 +1,433 @@
+{
+  "schema_version": 1.0,
+  "case_id": "dense-seven",
+  "categories": [
+    "dense"
+  ],
+  "physics_version": "1",
+  "content_version": "m1-tech-table-1",
+  "seed": 20260817.0,
+  "initial_snapshot": {
+    "revision": 0.0,
+    "bounds": {
+      "min": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "max": {
+        "x": 1000.0,
+        "y": 620.0
+      }
+    },
+    "balls": [
+      {
+        "id": 1.0,
+        "kind": "cue",
+        "number": 0.0,
+        "color_id": "",
+        "position": {
+          "x": 150.0,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 2.0,
+        "kind": "number",
+        "number": 1.0,
+        "color_id": "red",
+        "position": {
+          "x": 260.0,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 3.0,
+        "kind": "number",
+        "number": 2.0,
+        "color_id": "red",
+        "position": {
+          "x": 312.0,
+          "y": 320.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 4.0,
+        "kind": "number",
+        "number": 3.0,
+        "color_id": "red",
+        "position": {
+          "x": 364.0,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 5.0,
+        "kind": "number",
+        "number": 4.0,
+        "color_id": "red",
+        "position": {
+          "x": 416.0,
+          "y": 320.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 6.0,
+        "kind": "number",
+        "number": 5.0,
+        "color_id": "red",
+        "position": {
+          "x": 468.0,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 7.0,
+        "kind": "number",
+        "number": 6.0,
+        "color_id": "red",
+        "position": {
+          "x": 520.0,
+          "y": 320.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      }
+    ],
+    "walls": []
+  },
+  "shot_input": {
+    "cue_ball_id": 1.0,
+    "direction": {
+      "x": 1.0,
+      "y": 0.0
+    },
+    "power_level": 5.0
+  },
+  "expected": {
+    "status": "success",
+    "events": [
+      {
+        "tick": 8,
+        "type": "ball_collision",
+        "primary_id": 1,
+        "secondary_id": 2,
+        "point": {
+          "x": 245.59481811523438,
+          "y": 310.0
+        },
+        "data": {}
+      },
+      {
+        "tick": 8,
+        "type": "activation",
+        "primary_id": 2,
+        "secondary_id": 0,
+        "point": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "data": {
+          "source_id": 1
+        }
+      },
+      {
+        "tick": 10,
+        "type": "ball_collision",
+        "primary_id": 2,
+        "secondary_id": 3,
+        "point": {
+          "x": 296.400390625,
+          "y": 315.0
+        },
+        "data": {}
+      },
+      {
+        "tick": 10,
+        "type": "activation",
+        "primary_id": 3,
+        "secondary_id": 0,
+        "point": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "data": {
+          "source_id": 2
+        }
+      },
+      {
+        "tick": 13,
+        "type": "ball_collision",
+        "primary_id": 3,
+        "secondary_id": 4,
+        "point": {
+          "x": 350.06646728515625,
+          "y": 318.8675537109375
+        },
+        "data": {}
+      },
+      {
+        "tick": 13,
+        "type": "activation",
+        "primary_id": 4,
+        "secondary_id": 0,
+        "point": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "data": {
+          "source_id": 3
+        }
+      },
+      {
+        "tick": 75,
+        "type": "rail_collision",
+        "primary_id": 3,
+        "secondary_id": 0,
+        "point": {
+          "x": 518.7691650390625,
+          "y": 602.0
+        },
+        "data": {
+          "rail": "bottom"
+        }
+      },
+      {
+        "tick": 160,
+        "type": "rail_collision",
+        "primary_id": 4,
+        "secondary_id": 0,
+        "point": {
+          "x": 824.2938842773438,
+          "y": 18.0
+        },
+        "data": {
+          "rail": "top"
+        }
+      },
+      {
+        "tick": 174,
+        "type": "rail_collision",
+        "primary_id": 2,
+        "secondary_id": 0,
+        "point": {
+          "x": 398.48785400390625,
+          "y": 18.0
+        },
+        "data": {
+          "rail": "top"
+        }
+      },
+      {
+        "tick": 241,
+        "type": "rail_collision",
+        "primary_id": 4,
+        "secondary_id": 0,
+        "point": {
+          "x": 982.0,
+          "y": 108.73916625976563
+        },
+        "data": {
+          "rail": "right"
+        }
+      },
+      {
+        "tick": 347,
+        "type": "rail_collision",
+        "primary_id": 3,
+        "secondary_id": 0,
+        "point": {
+          "x": 951.0001220703125,
+          "y": 18.0
+        },
+        "data": {
+          "rail": "top"
+        }
+      },
+      {
+        "tick": 386,
+        "type": "rail_collision",
+        "primary_id": 3,
+        "secondary_id": 0,
+        "point": {
+          "x": 982.0,
+          "y": 56.46310043334961
+        },
+        "data": {
+          "rail": "right"
+        }
+      }
+    ],
+    "final_ball_states": [
+      {
+        "id": 1,
+        "kind": "cue",
+        "number": 0,
+        "color_id": "",
+        "position": {
+          "x": 278.5895080566406,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      },
+      {
+        "id": 2,
+        "kind": "number",
+        "number": 1,
+        "color_id": "red",
+        "position": {
+          "x": 509.93768310546875,
+          "y": 263.4012756347656
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": true,
+        "activation_source_id": 1
+      },
+      {
+        "id": 3,
+        "kind": "number",
+        "number": 2,
+        "color_id": "red",
+        "position": {
+          "x": 864.7221069335938,
+          "y": 214.93968200683594
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": true,
+        "activation_source_id": 2
+      },
+      {
+        "id": 4,
+        "kind": "number",
+        "number": 3,
+        "color_id": "red",
+        "position": {
+          "x": 673.572998046875,
+          "y": 305.02789306640625
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": true,
+        "activation_source_id": 3
+      },
+      {
+        "id": 5,
+        "kind": "number",
+        "number": 4,
+        "color_id": "red",
+        "position": {
+          "x": 416.0,
+          "y": 320.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      },
+      {
+        "id": 6,
+        "kind": "number",
+        "number": 5,
+        "color_id": "red",
+        "position": {
+          "x": 468.0,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      },
+      {
+        "id": 7,
+        "kind": "number",
+        "number": 6,
+        "color_id": "red",
+        "position": {
+          "x": 520.0,
+          "y": 320.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      }
+    ],
+    "wall_states": [],
+    "ticks": 720,
+    "stop_reason": "maximum_duration",
+    "state_hash": "b13073463325345c482cf07b531316a628cd88bc3b9962ee58e9e30b5b61e4a3"
+  }
+}

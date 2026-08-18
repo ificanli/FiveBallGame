@@ -1,6 +1,6 @@
 extends SceneTree
 
-const CASE_PATH := "res://tests/golden_replay/cases/versioned_schema_smoke.json"
+const CASE_PATH := "res://tests/golden_replay/cases/direct-hit.json"
 
 
 func _init() -> void:

@@ -7,6 +7,7 @@ export.cfg
 builds/*
 !builds/.gitkeep
 reports/
+tests/golden_replay/output/
 
 # Local tools and secrets
 .env

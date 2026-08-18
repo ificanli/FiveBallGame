@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "minimum_cases": 15,
+  "maximum_cases": 20,
+  "required_categories": [
+    "direct",
+    "angled",
+    "glancing",
+    "chain",
+    "dense",
+    "rail",
+    "corner",
+    "low-speed",
+    "timeout",
+    "overlap",
+    "maximum-power",
+    "copy",
+    "dye",
+    "prediction-first-contact"
+  ],
+  "cases": [
+    {
+      "id": "direct-hit",
+      "file": "direct-hit.json",
+      "categories": [
+        "direct"
+      ]
+    },
+    {
+      "id": "angled-hit",
+      "file": "angled-hit.json",
+      "categories": [
+        "angled"
+      ]
+    },
+    {
+      "id": "glancing-hit",
+      "file": "glancing-hit.json",
+      "categories": [
+        "glancing"
+      ]
+    },
+    {
+      "id": "three-ball-chain",
+      "file": "three-ball-chain.json",
+      "categories": [
+        "chain"
+      ]
+    },
+    {
+      "id": "dense-seven",
+      "file": "dense-seven.json",
+      "categories": [
+        "dense"
+      ]
+    },
+    {
+      "id": "left-rail",
+      "file": "left-rail.json",
+      "categories": [
+        "rail"
+      ]
+    },
+    {
+      "id": "top-rail-angle",
+      "file": "top-rail-angle.json",
+      "categories": [
+        "rail",
+        "angled"
+      ]
+    },
+    {
+      "id": "corner-bounce",
+      "file": "corner-bounce.json",
+      "categories": [
+        "corner",
+        "rail"
+      ]
+    },
+    {
+      "id": "low-speed-level-one",
+      "file": "low-speed-level-one.json",
+      "categories": [
+        "low-speed"
+      ]
+    },
+    {
+      "id": "long-run-timeout",
+      "file": "long-run-timeout.json",
+      "categories": [
+        "timeout"
+      ]
+    },
+    {
+      "id": "small-overlap-correction",
+      "file": "small-overlap-correction.json",
+      "categories": [
+        "overlap"
+      ]
+    },
+    {
+      "id": "maximum-power",
+      "file": "maximum-power.json",
+      "categories": [
+        "maximum-power"
+      ]
+    },
+    {
+      "id": "copy-wall-route",
+      "file": "copy-wall-route.json",
+      "categories": [
+        "copy"
+      ]
+    },
+    {
+      "id": "dye-wall-route",
+      "file": "dye-wall-route.json",
+      "categories": [
+        "dye"
+      ]
+    },
+    {
+      "id": "indirect-dye-chain",
+      "file": "indirect-dye-chain.json",
+      "categories": [
+        "chain",
+        "dye"
+      ]
+    },
+    {
+      "id": "cue-wall-no-effect",
+      "file": "cue-wall-no-effect.json",
+      "categories": [
+        "copy",
+        "prediction-first-contact"
+      ]
+    },
+    {
+      "id": "prediction-first-ball",
+      "file": "prediction-first-ball.json",
+      "categories": [
+        "prediction-first-contact"
+      ]
+    },
+    {
+      "id": "prediction-first-rail",
+      "file": "prediction-first-rail.json",
+      "categories": [
+        "prediction-first-contact",
+        "rail"
+      ]
+    }
+  ]
+}

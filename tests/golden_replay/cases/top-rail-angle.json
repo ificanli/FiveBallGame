@@ -1,0 +1,119 @@
+{
+  "schema_version": 1.0,
+  "case_id": "top-rail-angle",
+  "categories": [
+    "rail",
+    "angled"
+  ],
+  "physics_version": "1",
+  "content_version": "m1-tech-table-1",
+  "seed": 20260817.0,
+  "initial_snapshot": {
+    "revision": 0.0,
+    "bounds": {
+      "min": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "max": {
+        "x": 1000.0,
+        "y": 620.0
+      }
+    },
+    "balls": [
+      {
+        "id": 1.0,
+        "kind": "cue",
+        "number": 0.0,
+        "color_id": "",
+        "position": {
+          "x": 180.0,
+          "y": 180.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      }
+    ],
+    "walls": []
+  },
+  "shot_input": {
+    "cue_ball_id": 1.0,
+    "direction": {
+      "x": 0.707,
+      "y": -0.707
+    },
+    "power_level": 4.0
+  },
+  "expected": {
+    "status": "success",
+    "events": [
+      {
+        "tick": 34,
+        "type": "rail_collision",
+        "primary_id": 1,
+        "secondary_id": 0,
+        "point": {
+          "x": 345.4113464355469,
+          "y": 18.0
+        },
+        "data": {
+          "rail": "top"
+        }
+      },
+      {
+        "tick": 251,
+        "type": "rail_collision",
+        "primary_id": 1,
+        "secondary_id": 0,
+        "point": {
+          "x": 982.0,
+          "y": 591.7649536132813
+        },
+        "data": {
+          "rail": "right"
+        }
+      },
+      {
+        "tick": 258,
+        "type": "rail_collision",
+        "primary_id": 1,
+        "secondary_id": 0,
+        "point": {
+          "x": 970.5612182617188,
+          "y": 602.0
+        },
+        "data": {
+          "rail": "bottom"
+        }
+      }
+    ],
+    "final_ball_states": [
+      {
+        "id": 1,
+        "kind": "cue",
+        "number": 0,
+        "color_id": "",
+        "position": {
+          "x": 641.6676635742188,
+          "y": 305.9952697753906
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      }
+    ],
+    "wall_states": [],
+    "ticks": 720,
+    "stop_reason": "maximum_duration",
+    "state_hash": "60418e889fe7ce51aa1445fa839b82439635f88981a3e45d3450a83903498753"
+  }
+}

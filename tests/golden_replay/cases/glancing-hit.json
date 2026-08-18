@@ -1,0 +1,176 @@
+{
+  "schema_version": 1.0,
+  "case_id": "glancing-hit",
+  "categories": [
+    "glancing"
+  ],
+  "physics_version": "1",
+  "content_version": "m1-tech-table-1",
+  "seed": 20260817.0,
+  "initial_snapshot": {
+    "revision": 0.0,
+    "bounds": {
+      "min": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "max": {
+        "x": 1000.0,
+        "y": 620.0
+      }
+    },
+    "balls": [
+      {
+        "id": 1.0,
+        "kind": "cue",
+        "number": 0.0,
+        "color_id": "",
+        "position": {
+          "x": 150.0,
+          "y": 300.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 2.0,
+        "kind": "number",
+        "number": 5.0,
+        "color_id": "yellow",
+        "position": {
+          "x": 300.0,
+          "y": 330.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      }
+    ],
+    "walls": []
+  },
+  "shot_input": {
+    "cue_ball_id": 1.0,
+    "direction": {
+      "x": 1.0,
+      "y": 0.0
+    },
+    "power_level": 3.0
+  },
+  "expected": {
+    "status": "success",
+    "events": [
+      {
+        "tick": 24,
+        "type": "ball_collision",
+        "primary_id": 1,
+        "secondary_id": 2,
+        "point": {
+          "x": 290.54278564453125,
+          "y": 315.0
+        },
+        "data": {}
+      },
+      {
+        "tick": 24,
+        "type": "activation",
+        "primary_id": 2,
+        "secondary_id": 0,
+        "point": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "data": {
+          "source_id": 1
+        }
+      },
+      {
+        "tick": 196,
+        "type": "rail_collision",
+        "primary_id": 2,
+        "secondary_id": 0,
+        "point": {
+          "x": 471.83709716796875,
+          "y": 602.0
+        },
+        "data": {
+          "rail": "bottom"
+        }
+      },
+      {
+        "tick": 205,
+        "type": "rail_collision",
+        "primary_id": 1,
+        "secondary_id": 0,
+        "point": {
+          "x": 744.3054809570313,
+          "y": 18.0
+        },
+        "data": {
+          "rail": "top"
+        }
+      },
+      {
+        "tick": 403,
+        "type": "rail_collision",
+        "primary_id": 1,
+        "secondary_id": 0,
+        "point": {
+          "x": 982.0,
+          "y": 148.27915954589844
+        },
+        "data": {
+          "rail": "right"
+        }
+      }
+    ],
+    "final_ball_states": [
+      {
+        "id": 1,
+        "kind": "cue",
+        "number": 0,
+        "color_id": "",
+        "position": {
+          "x": 862.67236328125,
+          "y": 220.91030883789063
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      },
+      {
+        "id": 2,
+        "kind": "number",
+        "number": 5,
+        "color_id": "yellow",
+        "position": {
+          "x": 620.1032104492188,
+          "y": 390.3531188964844
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": true,
+        "activation_source_id": 1
+      }
+    ],
+    "wall_states": [],
+    "ticks": 720,
+    "stop_reason": "maximum_duration",
+    "state_hash": "0c864de474a2a79f8189ef98f619055f7d4b522259ad7157a45c338b9f7e7a43"
+  }
+}

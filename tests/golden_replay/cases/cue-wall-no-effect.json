@@ -1,0 +1,151 @@
+{
+  "schema_version": 1.0,
+  "case_id": "cue-wall-no-effect",
+  "categories": [
+    "copy",
+    "prediction-first-contact"
+  ],
+  "physics_version": "1",
+  "content_version": "m1-tech-table-1",
+  "seed": 20260817.0,
+  "initial_snapshot": {
+    "revision": 0.0,
+    "bounds": {
+      "min": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "max": {
+        "x": 1000.0,
+        "y": 620.0
+      }
+    },
+    "balls": [
+      {
+        "id": 1.0,
+        "kind": "cue",
+        "number": 0.0,
+        "color_id": "",
+        "position": {
+          "x": 150.0,
+          "y": 300.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      }
+    ],
+    "walls": [
+      {
+        "id": 1.0,
+        "kind": "copy",
+        "rect": {
+          "position": {
+            "x": 350.0,
+            "y": 250.0
+          },
+          "size": {
+            "x": 20.0,
+            "y": 100.0
+          }
+        },
+        "color_id": "",
+        "charge": 1.0,
+        "maximum_charge": 1.0
+      }
+    ]
+  },
+  "shot_input": {
+    "cue_ball_id": 1.0,
+    "direction": {
+      "x": 1.0,
+      "y": 0.0
+    },
+    "power_level": 3.0
+  },
+  "expected": {
+    "status": "success",
+    "events": [
+      {
+        "tick": 35,
+        "type": "wall_collision",
+        "primary_id": 1,
+        "secondary_id": 1,
+        "point": {
+          "x": 350.0,
+          "y": 300.0
+        },
+        "data": {}
+      },
+      {
+        "tick": 122,
+        "type": "rail_collision",
+        "primary_id": 1,
+        "secondary_id": 0,
+        "point": {
+          "x": 18.0,
+          "y": 300.0
+        },
+        "data": {
+          "rail": "left"
+        }
+      },
+      {
+        "tick": 277,
+        "type": "wall_collision",
+        "primary_id": 1,
+        "secondary_id": 1,
+        "point": {
+          "x": 350.0,
+          "y": 300.0
+        },
+        "data": {}
+      }
+    ],
+    "final_ball_states": [
+      {
+        "id": 1,
+        "kind": "cue",
+        "number": 0,
+        "color_id": "",
+        "position": {
+          "x": 68.17758178710938,
+          "y": 300.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      }
+    ],
+    "wall_states": [
+      {
+        "id": 1,
+        "kind": "copy",
+        "rect": {
+          "position": {
+            "x": 350.0,
+            "y": 250.0
+          },
+          "size": {
+            "x": 20.0,
+            "y": 100.0
+          }
+        },
+        "color_id": "",
+        "charge": 1,
+        "maximum_charge": 1
+      }
+    ],
+    "ticks": 720,
+    "stop_reason": "maximum_duration",
+    "state_hash": "c22409be9d53ad31dae7338b0dc95617c1cea5272cfb7093a660794a9889a491"
+  }
+}

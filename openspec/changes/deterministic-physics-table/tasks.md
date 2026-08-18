@@ -42,11 +42,11 @@
 
 ## 6. Golden Replay execution and coverage
 
-- [ ] 6.1 Implement the Headless replay runner for valid/invalid cases with structured success, validation error, non-finite error, stop reason, events, final states, ticks, and Hash.
-- [ ] 6.2 Implement explicit golden comparison and opt-in update commands; normal tests and CI must never overwrite expected data.
-- [ ] 6.3 Create 15–20 reviewed Golden cases covering direct/angled/glancing hits, chains, dense contact, rails/corners, low speed, timeout, overlap correction, maximum power, copy, dye, and prediction first contact.
-- [ ] 6.4 Add a manifest/category audit so CI fails when case count or required coverage categories regress.
-- [ ] 6.5 Add a 100-repeat determinism command and retain a compact failure Artifact with the first divergent run/tick/event/state.
+- [x] 6.1 Implement the Headless replay runner for valid/invalid cases with structured success, validation error, non-finite error, stop reason, events, final states, ticks, and Hash.
+- [x] 6.2 Implement explicit golden comparison and opt-in update commands; normal tests and CI must never overwrite expected data.
+- [x] 6.3 Create 15–20 reviewed Golden cases covering direct/angled/glancing hits, chains, dense contact, rails/corners, low speed, timeout, overlap correction, maximum power, copy, dye, and prediction first contact.
+- [x] 6.4 Add a manifest/category audit so CI fails when case count or required coverage categories regress.
+- [x] 6.5 Add a 100-repeat determinism command and retain a compact failure Artifact with the first divergent run/tick/event/state.
 
 ## 7. Technical table and debug presentation
 

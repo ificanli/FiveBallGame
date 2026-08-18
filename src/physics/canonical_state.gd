@@ -19,6 +19,8 @@ static func normalize(value: Variant) -> Variant:
 			for item: Variant in value:
 				output_array.append(normalize(item))
 			return output_array
+		TYPE_INT:
+			return float(value)
 		TYPE_FLOAT:
 			var number: float = value
 			if not is_finite(number):

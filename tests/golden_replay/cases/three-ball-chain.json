@@ -1,0 +1,230 @@
+{
+  "schema_version": 1.0,
+  "case_id": "three-ball-chain",
+  "categories": [
+    "chain"
+  ],
+  "physics_version": "1",
+  "content_version": "m1-tech-table-1",
+  "seed": 20260817.0,
+  "initial_snapshot": {
+    "revision": 0.0,
+    "bounds": {
+      "min": {
+        "x": 0.0,
+        "y": 0.0
+      },
+      "max": {
+        "x": 1000.0,
+        "y": 620.0
+      }
+    },
+    "balls": [
+      {
+        "id": 1.0,
+        "kind": "cue",
+        "number": 0.0,
+        "color_id": "",
+        "position": {
+          "x": 150.0,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 2.0,
+        "kind": "number",
+        "number": 2.0,
+        "color_id": "red",
+        "position": {
+          "x": 280.0,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      },
+      {
+        "id": 3.0,
+        "kind": "number",
+        "number": 6.0,
+        "color_id": "blue",
+        "position": {
+          "x": 410.0,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0.0
+      }
+    ],
+    "walls": []
+  },
+  "shot_input": {
+    "cue_ball_id": 1.0,
+    "direction": {
+      "x": 1.0,
+      "y": 0.0
+    },
+    "power_level": 4.0
+  },
+  "expected": {
+    "status": "success",
+    "events": [
+      {
+        "tick": 13,
+        "type": "ball_collision",
+        "primary_id": 1,
+        "secondary_id": 2,
+        "point": {
+          "x": 263.76678466796875,
+          "y": 310.0
+        },
+        "data": {}
+      },
+      {
+        "tick": 13,
+        "type": "activation",
+        "primary_id": 2,
+        "secondary_id": 0,
+        "point": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "data": {
+          "source_id": 1
+        }
+      },
+      {
+        "tick": 28,
+        "type": "ball_collision",
+        "primary_id": 2,
+        "secondary_id": 3,
+        "point": {
+          "x": 393.9462890625,
+          "y": 310.0
+        },
+        "data": {}
+      },
+      {
+        "tick": 28,
+        "type": "activation",
+        "primary_id": 3,
+        "secondary_id": 0,
+        "point": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "data": {
+          "source_id": 2
+        }
+      },
+      {
+        "tick": 147,
+        "type": "rail_collision",
+        "primary_id": 3,
+        "secondary_id": 0,
+        "point": {
+          "x": 982.0,
+          "y": 310.0
+        },
+        "data": {
+          "rail": "right"
+        }
+      },
+      {
+        "tick": 403,
+        "type": "ball_collision",
+        "primary_id": 2,
+        "secondary_id": 3,
+        "point": {
+          "x": 423.50592041015625,
+          "y": 310.0
+        },
+        "data": {}
+      },
+      {
+        "tick": 492,
+        "type": "ball_collision",
+        "primary_id": 1,
+        "secondary_id": 2,
+        "point": {
+          "x": 299.5281982421875,
+          "y": 310.0
+        },
+        "data": {}
+      }
+    ],
+    "final_ball_states": [
+      {
+        "id": 1,
+        "kind": "cue",
+        "number": 0,
+        "color_id": "",
+        "position": {
+          "x": 173.76986694335938,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      },
+      {
+        "id": 2,
+        "kind": "number",
+        "number": 2,
+        "color_id": "red",
+        "position": {
+          "x": 317.5282897949219,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": true,
+        "activation_source_id": 1
+      },
+      {
+        "id": 3,
+        "kind": "number",
+        "number": 6,
+        "color_id": "blue",
+        "position": {
+          "x": 441.50604248046875,
+          "y": 310.0
+        },
+        "velocity": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "radius": 18.0,
+        "active": true,
+        "activation_source_id": 2
+      }
+    ],
+    "wall_states": [],
+    "ticks": 720,
+    "stop_reason": "maximum_duration",
+    "state_hash": "e96ec3648f2c52eb5039626c1d79e7db11015271854c2296bf65f1dc9f79716f"
+  }
+}
