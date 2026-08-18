@@ -1,9 +1,9 @@
 # 《五球满贯》Steam 项目状态
 
 更新时间：2026-08-17  
-当前阶段：PREPRODUCTION / TOOLING  
-主里程碑：M1 确定性物理技术桌  
-里程碑状态：PASSED
+当前阶段：M2 PLANNING
+主里程碑：M2 单机核心闭环
+里程碑状态：PLANNING / GATE P REVIEW
 
 上一里程碑：M0 工具链与正式仓库 — `PASSED`
 
@@ -39,8 +39,16 @@
 - `production/M0_ACCEPTANCE_REPORT.md`：完整验收摘要；
 - `production/M0_INDEPENDENT_REVIEW.md`：基于远端干净 clone 的独立复验，结论 `PASS_ENGINEERING`。
 
+## M2 规划状态
+
+- OpenSpec Change `single-player-core-loop` 已创建并完成 proposal/specs/design/tasks；
+- 严格校验通过，规划提交为 `1070630`，已推送 `origin/main`；
+- 范围覆盖碰撞收球、三态、五球槽、复制/染色槽位同步、最佳组合、结算/保留、六球爆仓及单桌教程胜负；
+- 明确 CUT 补球/道具、徽章/奖励、24 桌 Run、存档、Steamworks、PvP 与正式内容生产；
+- 当前停在 Gate P，尚未创建 feature 分支或编写 M2 实现代码。
+
 ## 下一决策
 
-1. `deterministic-physics-table` 已归档到 `openspec/changes/archive/2026-08-18-deterministic-physics-table/`，四份能力已同步到 `openspec/specs/`；
-2. 不自动开始 M2；先创建单机核心闭环的独立 OpenSpec Change；
-3. 该 Change 必须覆盖碰撞收球、三态、五球槽、复制/染色槽位同步、最佳组合、结算/保留与六球爆仓，并再次通过 Gate P。
+1. 用户审核 `openspec/changes/single-player-core-loop/`；
+2. 若 Gate P 批准，从提交 `1070630` 创建 `feature/single-player-core-loop` 并按 tasks 执行；
+3. 若组合倍率、爆仓时序或教程桌范围需要修改，先更新 Change 并重新严格校验，不得直接编码。

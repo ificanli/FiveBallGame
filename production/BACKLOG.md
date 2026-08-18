@@ -16,5 +16,6 @@
 | M1-01 | Create `deterministic-physics-table` OpenSpec Change | DONE | 4/4 artifacts; strict validation passed |
 | M1-02 | Gate P review of M1 proposal/spec/design/tasks | DONE | User approved 2026-08-17 |
 | M1-03 | Implement deterministic physics table | DONE | 44/44 tasks; engineering + human gates passed |
-| M1-04 | Archive Change and integrate feature branch | IN_REVIEW | Final verification and merge decision |
-| M2-01 | Propose single-player core loop Change | BACKLOG | Do not implement without Gate P |
+| M1-04 | Archive Change and integrate feature branch | DONE | Archived, synced, merged and pushed at `7642076` |
+| M2-01 | Propose single-player core loop Change | IN_REVIEW | `single-player-core-loop`; strict validation passed; Gate P required |
+| M2-02 | Implement single-player core loop | BLOCKED | Do not implement without explicit Gate P approval |
