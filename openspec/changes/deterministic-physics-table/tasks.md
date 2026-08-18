@@ -1,16 +1,16 @@
 ## 1. Branch, fixtures, and failing contracts
 
-- [ ] 1.1 Create `feature/deterministic-physics-table`, record the approved Change revision, and confirm the M0 test/export baseline still passes before implementation.
-- [ ] 1.2 Extract 5–10 read-only webpage reference shots into a documented comparison sheet with initial layout, direction, power level, expected first contact, stopping rhythm, and human-review notes.
-- [ ] 1.3 Add failing GdUnit4 tests for replay schema validation, invalid power/direction input, deterministic IDs, canonical serialization, non-finite rejection, and stable state Hash.
-- [ ] 1.4 Replace the M0 placeholder case with a versioned replay fixture format while preserving an explicit migration test for the old contract-only case.
+- [x] 1.1 Create `feature/deterministic-physics-table`, record the approved Change revision, and confirm the M0 test/export baseline still passes before implementation.
+- [x] 1.2 Extract 5–10 read-only webpage reference shots into a documented comparison sheet with initial layout, direction, power level, expected first contact, stopping rhythm, and human-review notes.
+- [x] 1.3 Add failing GdUnit4 tests for replay schema validation, invalid power/direction input, deterministic IDs, canonical serialization, non-finite rejection, and stable state Hash.
+- [x] 1.4 Replace the M0 placeholder case with a versioned replay fixture format while preserving an explicit migration test for the old contract-only case.
 
 ## 2. Pure data model and versioned configuration
 
-- [ ] 2.1 Implement serializable ball, wall, table snapshot, shot input, physics config, event, and simulation-result data types without Node dependencies.
-- [ ] 2.2 Add stable integer ID allocation, explicit Seed/RNG initialization, full snapshot serialization, and schema/physics/content version fields.
-- [ ] 2.3 Implement canonical field ordering, comparison-grid normalization, deterministic Hash generation, and structured first-difference reporting.
-- [ ] 2.4 Add validation that rejects missing fields, unsupported versions, invalid IDs, overlaps outside the accepted correction range, invalid power/direction, and non-finite values.
+- [x] 2.1 Implement serializable ball, wall, table snapshot, shot input, physics config, event, and simulation-result data types without Node dependencies.
+- [x] 2.2 Add stable integer ID allocation, explicit Seed/RNG initialization, full snapshot serialization, and schema/physics/content version fields.
+- [x] 2.3 Implement canonical field ordering, comparison-grid normalization, deterministic Hash generation, and structured first-difference reporting.
+- [x] 2.4 Add validation that rejects missing fields, unsupported versions, invalid IDs, overlaps outside the accepted correction range, invalid power/direction, and non-finite values.
 
 ## 3. Fixed-step motion and collision core
 

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "case_id": "versioned-schema-smoke",
+  "categories": ["contract"],
+  "physics_version": "1",
+  "content_version": "m1-tech-table-1",
+  "seed": 20260817,
+  "initial_snapshot": {
+    "revision": 0,
+    "bounds": {"min": {"x": 0.0, "y": 0.0}, "max": {"x": 1000.0, "y": 620.0}},
+    "balls": [
+      {
+        "id": 1,
+        "kind": "cue",
+        "number": 0,
+        "color_id": "",
+        "position": {"x": 130.0, "y": 315.0},
+        "velocity": {"x": 0.0, "y": 0.0},
+        "radius": 18.0,
+        "active": false,
+        "activation_source_id": 0
+      }
+    ],
+    "walls": []
+  },
+  "shot_input": {
+    "cue_ball_id": 1,
+    "direction": {"x": 1.0, "y": 0.0},
+    "power_level": 3
+  },
+  "expected": {}
+}

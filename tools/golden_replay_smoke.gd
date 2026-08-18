@@ -1,6 +1,6 @@
 extends SceneTree
 
-const CASE_PATH := "res://tests/golden_replay/cases/m0_contract_smoke.json"
+const CASE_PATH := "res://tests/golden_replay/cases/versioned_schema_smoke.json"
 
 
 func _init() -> void:
@@ -12,7 +12,10 @@ func _init() -> void:
 	if typeof(parsed) != TYPE_DICTIONARY:
 		_finish({"status": "error", "case": CASE_PATH, "reason": "invalid_json"}, 1)
 		return
-	var required := ["schema_version", "case_id", "input", "expected"]
+	var required := [
+		"schema_version", "case_id", "physics_version", "content_version",
+		"seed", "initial_snapshot", "shot_input", "expected"
+	]
 	for key: String in required:
 		if not parsed.has(key):
 			_finish({"status": "error", "case": CASE_PATH, "reason": "missing_%s" % key}, 1)

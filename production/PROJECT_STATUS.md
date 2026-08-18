@@ -2,8 +2,8 @@
 
 更新时间：2026-08-17  
 当前阶段：PREPRODUCTION / TOOLING  
-主里程碑：M1 确定性物理技术桌（规格阶段）  
-里程碑状态：PLANNING
+主里程碑：M1 确定性物理技术桌  
+里程碑状态：BUILDING
 
 上一里程碑：M0 工具链与正式仓库 — `PASSED`
 
@@ -22,8 +22,9 @@
 
 ## 当前进行中 / 阻塞
 
-- OpenSpec Change `deterministic-physics-table` 的 proposal、4 份 specs、design、tasks 已完成并通过 strict validation；
-- M1 当前等待用户 Gate P 审核，未经明确批准不得实现；
+- OpenSpec Change `deterministic-physics-table` 已于 2026-08-17 通过用户 Gate P；
+- feature 分支、批准基线、网页原型 10 条对照清单、版本化回放契约与纯数据模型已完成；
+- 当前 OpenSpec 进度：8/44 tasks；GdUnit4 18/18 通过；
 - Linux 导出包已生成但未在 Linux 桌面手动启动；不阻塞 M0，后续由跨平台 CI smoke 补强。
 
 ## 当前证据
@@ -37,6 +38,6 @@
 
 ## 下一决策
 
-1. 用户审核 `deterministic-physics-table` 的范围、规格、设计与任务；
-2. 若需修改，先更新 Change 并重新 strict validation；
-3. 只有用户明确批准 Gate P 后才进入 M1 实现。
+1. 实现固定步长、摩擦/停止、圆—圆与圆—库边碰撞；
+2. 压力测试子步方案；若穿透门失败则暂停并提 time-of-impact 变更；
+3. 通过后再实现激活、复制/染色、预测和 Golden 套件。
