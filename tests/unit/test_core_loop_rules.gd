@@ -45,7 +45,7 @@ func test_copy_creates_slot_without_physical_id() -> void:
 	result.final_snapshot = state.table.duplicate_state()
 	result.events.assign([
 		PhysicsEvent.rule_event("activation", 2, 2, 0, {"source_id": 1}),
-		PhysicsEvent.rule_event("copy", 5, 2, 1, {"number": 3, "color_id": "blue"}),
+		PhysicsEvent.rule_event("copy", 5, 2, 1, {"number": 1, "color_id": "blue"}),
 	])
 	CoreLoopReducer.new().apply_simulation(state, result)
 	assert_int(state.hand.size()).is_equal(2)

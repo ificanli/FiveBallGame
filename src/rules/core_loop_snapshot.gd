@@ -19,6 +19,26 @@ var combo: Dictionary = ComboEvaluator.evaluate([])
 var last_rule_events: Array[Dictionary] = []
 
 
+static func create_tutorial(table_seed: int = 20260818) -> CoreLoopSnapshot:
+	var table := TableSnapshot.new()
+	table.seed = table_seed
+	table.content_version = "m2-tutorial-1"
+	table.balls.assign([
+		BallState.new(1, "cue", 0, "", Vector2(130.0, 315.0)),
+		BallState.new(2, "number", 3, "red", Vector2(340.0, 315.0)),
+		BallState.new(3, "number", 4, "red", Vector2(455.0, 270.0)),
+		BallState.new(4, "number", 5, "blue", Vector2(570.0, 315.0)),
+		BallState.new(5, "number", 3, "yellow", Vector2(675.0, 220.0)),
+		BallState.new(6, "number", 6, "red", Vector2(720.0, 390.0)),
+		BallState.new(7, "number", 8, "green", Vector2(835.0, 315.0)),
+	])
+	table.walls.assign([
+		WallState.new(1, "copy", Rect2(930.0, 140.0, 18.0, 120.0), "", 1),
+		WallState.new(2, "dye", Rect2(930.0, 360.0, 18.0, 120.0), "red", 0),
+	])
+	return create(table, 180, 8)
+
+
 static func create(table_snapshot: TableSnapshot, target: int = 100, strokes: int = 6) -> CoreLoopSnapshot:
 	var state := CoreLoopSnapshot.new()
 	state.table = table_snapshot.duplicate_state()

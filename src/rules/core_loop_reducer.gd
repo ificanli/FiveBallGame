@@ -11,6 +11,7 @@ func apply_simulation(state: CoreLoopSnapshot, result: SimulationResult) -> Arra
 		state.processed_event_count += 1
 		if state.shot_busted:
 			if ["activation", "copy", "dye"].has(event.type):
+				_revert_ignored_effect(state, event)
 				output.append(_rule_event("ignored_after_bust", event.tick, event.primary_id, {"source_type": event.type}))
 			continue
 		match event.type:
@@ -48,7 +49,10 @@ func _apply_copy(state: CoreLoopSnapshot, event: PhysicsEvent, event_index: int,
 	if state.hand.size() >= 5:
 		_bust(state, event.primary_id, event.tick, "copy", output)
 		return
-	state.hand.append(HandSlot.copy_of(ball, event_index))
+	var copy_slot := HandSlot.copy_of(ball, event_index)
+	copy_slot.number = int(event.data.get("number", ball.number))
+	copy_slot.color_id = str(event.data.get("color_id", ball.color_id))
+	state.hand.append(copy_slot)
 	output.append(_rule_event("slot_copied", event.tick, event.primary_id, {"slot_index": state.hand.size() - 1}))
 
 
@@ -76,6 +80,18 @@ func _bust(state: CoreLoopSnapshot, trigger_ball_id: int, tick: int, source: Str
 	state.shot_busted = true
 	state.refresh_combo()
 	output.append(_rule_event("bust", tick, trigger_ball_id, {"source": source, "affected_ball_ids": affected.keys()}))
+
+
+func _revert_ignored_effect(state: CoreLoopSnapshot, event: PhysicsEvent) -> void:
+	if event.type == "dye":
+		var ball := state.table.find_ball(event.primary_id)
+		if ball != null:
+			ball.color_id = str(event.data.get("old_color_id", ball.color_id))
+	elif event.type == "copy":
+		for wall: WallState in state.table.walls:
+			if wall.id == event.secondary_id:
+				wall.charge = mini(wall.maximum_charge, wall.charge + 1)
+				break
 
 
 func _rule_event(type: String, tick: int, ball_id: int, data: Dictionary) -> Dictionary:

@@ -49,15 +49,21 @@ jobs:
         run: ${{ matrix.godot }} --path . -s -d --headless res://addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add tests/unit
       - name: Golden Replay 100-repeat
         run: ${{ matrix.godot }} --headless --path . --script res://tools/golden_replay_runner.gd -- --repeat 100 --output ${{ matrix.replay }}
+      - name: Core-loop session replay 100-repeat
+        run: ${{ matrix.godot }} --headless --path . --script res://tools/core_loop_replay_runner.gd -- --repeat 100 --output core-${{ matrix.replay }}
       - name: Physics stress
         run: ${{ matrix.godot }} --headless --path . --script res://tools/physics_stress.gd
+      - name: Core-loop stress
+        run: ${{ matrix.godot }} --headless --path . --script res://tools/core_loop_stress.gd
       - name: Technical-table startup smoke
         run: ${{ matrix.godot }} --headless --path . --quit-after 2
       - name: Upload normalized replay output
         uses: actions/upload-artifact@v4
         with:
           name: replay-${{ runner.os }}-${{ github.sha }}
-          path: ${{ matrix.replay }}
+          path: |
+            ${{ matrix.replay }}
+            core-${{ matrix.replay }}
           if-no-files-found: error
 
   compare-replays:
@@ -71,13 +77,17 @@ jobs:
           path: replay-artifacts
           merge-multiple: true
       - name: Compare Windows and Linux normalized results
-        run: python tools/compare_platform_replays.py replay-artifacts/golden-windows.json replay-artifacts/golden-linux.json replay-diff.json
+        run: |
+          python tools/compare_platform_replays.py replay-artifacts/golden-windows.json replay-artifacts/golden-linux.json replay-diff.json
+          python tools/compare_platform_replays.py replay-artifacts/core-golden-windows.json replay-artifacts/core-golden-linux.json core-replay-diff.json
       - name: Upload cross-platform diff
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: replay-cross-platform-${{ github.sha }}
-          path: replay-diff.json
+          path: |
+            replay-diff.json
+            core-replay-diff.json
           if-no-files-found: error
 
   export:
@@ -115,6 +125,6 @@ jobs:
       - name: Upload ${{ matrix.target.dir }} artifact
         uses: actions/upload-artifact@v4
         with:
-          name: m1-${{ matrix.target.dir }}-${{ github.sha }}
+          name: m2-${{ matrix.target.dir }}-${{ github.sha }}
           path: builds/${{ matrix.target.dir }}/
           if-no-files-found: error

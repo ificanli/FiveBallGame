@@ -36,28 +36,28 @@
 
 ## 6. Multi-shot deterministic replay
 
-- [ ] 6.1 Define and validate a versioned core-loop session case/result schema while retaining the existing M1 single-shot replay schema unchanged.
-- [ ] 6.2 Implement a Headless session runner that applies shot and decision commands and emits per-command events, snapshots, scores, strokes, phase, and canonical Hash.
-- [ ] 6.3 Add rule replay cases for settle, keep-then-score, physical sixth-ball bust, copy-wall bust, dye synchronization, waste-ball later collision, final-stroke win, and final-stroke loss.
-- [ ] 6.4 Repeat every M2 session case 100 times and fail on any event, snapshot, tick, phase, score, or Hash drift.
-- [ ] 6.5 Extend Windows/Linux CI comparison to M2 session outputs without weakening the existing M1 Golden Replay comparison.
+- [x] 6.1 Define and validate a versioned core-loop session case/result schema while retaining the existing M1 single-shot replay schema unchanged.
+- [x] 6.2 Implement a Headless session runner that applies shot and decision commands and emits per-command events, snapshots, scores, strokes, phase, and canonical Hash.
+- [x] 6.3 Add rule replay cases for settle, keep-then-score, physical sixth-ball bust, copy-wall bust, dye synchronization, waste-ball later collision, final-stroke win, and final-stroke loss.
+- [x] 6.4 Repeat every M2 session case 100 times and fail on any event, snapshot, tick, phase, score, or Hash drift.
+- [x] 6.5 Extend Windows/Linux CI comparison to M2 session outputs without weakening the existing M1 Golden Replay comparison.
 
 ## 7. Tutorial table presentation and interaction
 
-- [ ] 7.1 Create a versioned fixed-Seed tutorial configuration with layout, target, strokes, balls, copy/dye walls, and a documented reset baseline.
-- [ ] 7.2 Add a tutorial-table scene/adapter that renders the core snapshot while reusing the M1 simulator, five powers, three preview modes, and input behavior.
-- [ ] 7.3 Render target/current score, strokes, five hand slots, colors/numbers, best combo, participant/pollution emphasis, score preview, wall charges, and current legal actions.
-- [ ] 7.4 Implement settle, keep, final-settle, and reset interactions with unavailable actions disabled rather than silently accepted.
-- [ ] 7.5 Add visible collection, hand, waste, copy, dye-to-slot, bust, win, and loss feedback sourced from rule events; preserve readable IDs/colors during motion.
-- [ ] 7.6 Add UI adapter tests proving that displayed slots, score, state, and legal actions derive from snapshots and cannot mutate rule truth.
+- [x] 7.1 Create a versioned fixed-Seed tutorial configuration with layout, target, strokes, balls, copy/dye walls, and a documented reset baseline.
+- [x] 7.2 Add a tutorial-table scene/adapter that renders the core snapshot while reusing the M1 simulator, five powers, three preview modes, and input behavior.
+- [x] 7.3 Render target/current score, strokes, five hand slots, colors/numbers, best combo, participant/pollution emphasis, score preview, wall charges, and current legal actions.
+- [x] 7.4 Implement settle, keep, final-settle, and reset interactions with unavailable actions disabled rather than silently accepted.
+- [x] 7.5 Add visible collection, hand, waste, copy, dye-to-slot, bust, win, and loss feedback sourced from rule events; preserve readable IDs/colors during motion.
+- [x] 7.6 Add UI adapter tests proving that displayed slots, score, state, and legal actions derive from snapshots and cannot mutate rule truth.
 
 ## 8. Regression, stress, and independent verification
 
-- [ ] 8.1 Run the complete GdUnit4 suite and all M1/M2 replays Headless; fix failures without rewriting approved expected results to hide regressions.
-- [ ] 8.2 Add seeded stress sessions covering dense chains, repeated keep decisions, same-tick collections, copy/dye sequences, repeated reset, and all five powers; assert finite values and valid states.
+- [x] 8.1 Run the complete GdUnit4 suite and all M1/M2 replays Headless; fix failures without rewriting approved expected results to hide regressions.
+- [x] 8.2 Add seeded stress sessions covering dense chains, repeated keep decisions, same-tick collections, copy/dye sequences, repeated reset, and all five powers; assert finite values and valid states.
 - [ ] 8.3 Export Windows and Linux candidates from a clean clone, start the Windows export through the real entry point, and collect logs with no blocking errors.
 - [ ] 8.4 Perform an independent Gate I review against proposal/spec/design/tasks, including scope audit, test quality, sensitive-file scan, and rollback verification.
-- [ ] 8.5 Prepare `production/M2_HUMAN_QA_CHECKLIST.md` with build commit and observable checks for collection, three states, wall ownership, best combo, settle, keep, bust, win/loss, and reset.
+- [x] 8.5 Prepare `production/M2_HUMAN_QA_CHECKLIST.md` with build commit and observable checks for collection, three states, wall ownership, best combo, settle, keep, bust, win/loss, and reset.
 
 ## 9. Human gate and delivery
 
