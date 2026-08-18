@@ -50,9 +50,9 @@ jobs:
       - name: Prepare replay output
         run: python -c "import os; os.makedirs('replay-output', exist_ok=True)"
       - name: Golden Replay 100-repeat
-        run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --script res://tools/golden_replay_runner.gd -- --repeat 100 --output res://replay-output/${{ matrix.replay }}
+        run: python tools/run_ci_replay.py --godot "${{ matrix.godot }}" --project "${{ github.workspace }}" --script res://tools/golden_replay_runner.gd --repeat 100 --output "replay-output/${{ matrix.replay }}"
       - name: Core-loop session replay 100-repeat
-        run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --script res://tools/core_loop_replay_runner.gd -- --repeat 100 --output res://replay-output/core-${{ matrix.replay }}
+        run: python tools/run_ci_replay.py --godot "${{ matrix.godot }}" --project "${{ github.workspace }}" --script res://tools/core_loop_replay_runner.gd --repeat 100 --output "replay-output/core-${{ matrix.replay }}"
       - name: Physics stress
         run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --script res://tools/physics_stress.gd
       - name: Core-loop stress
