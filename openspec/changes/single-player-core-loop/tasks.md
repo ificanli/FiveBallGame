@@ -1,8 +1,8 @@
 ## 1. Approved baseline and branch safety
 
-- [ ] 1.1 Record the user-approved Gate P commit, M2 scope, combo table, CUT list, Godot/OpenSpec versions, and rollback point in the production status files.
-- [ ] 1.2 Create `feature/single-player-core-loop` from the approved clean `main` and verify all M1 GdUnit4 and Golden Replay baselines before changing rules.
-- [ ] 1.3 Add a spec-to-test traceability checklist covering every M2 requirement and scenario group; confirm no task introduces badges, rewards, replenishment, Run progression, save data, PvP, or formal art production.
+- [x] 1.1 Record the user-approved Gate P commit, M2 scope, combo table, CUT list, Godot/OpenSpec versions, and rollback point in the production status files.
+- [x] 1.2 Create `feature/single-player-core-loop` from the approved clean `main` and verify all M1 GdUnit4 and Golden Replay baselines before changing rules.
+- [x] 1.3 Add a spec-to-test traceability checklist covering every M2 requirement and scenario group; confirm no task introduces badges, rewards, replenishment, Run progression, save data, PvP, or formal art production.
 
 ## 2. Core rule data model
 
