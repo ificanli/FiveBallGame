@@ -19,7 +19,9 @@ func _init() -> void:
 				return
 		results.append({"case_id": case.id, "state_hash": baseline.state_hash, "steps": baseline.steps.size(), "phase": baseline.final_state.phase, "score": baseline.final_state.score})
 	var payload := {"status": "success", "repeat": repeat_count, "schema_version": 1, "cases": results}
-	var file := FileAccess.open(output_path, FileAccess.WRITE)
+	var absolute_output := ProjectSettings.globalize_path(output_path) if output_path.begins_with("res://") else output_path
+	DirAccess.make_dir_recursive_absolute(absolute_output.get_base_dir())
+	var file := FileAccess.open(absolute_output, FileAccess.WRITE)
 	if file == null:
 		print(JSON.stringify({"status": "error", "reason": "open_output_failed"}))
 		quit(1)
