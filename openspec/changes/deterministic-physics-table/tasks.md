@@ -50,11 +50,11 @@
 
 ## 7. Technical table and debug presentation
 
-- [ ] 7.1 Build a fixed-Seed Godot technical table scene with one cue ball, six number balls, standard rails, one copy wall, one dye wall, and no production art dependency.
-- [ ] 7.2 Implement the scene adapter that renders rule snapshots and interpolates visuals without feeding node transforms back into simulation state.
-- [ ] 7.3 Add aiming, five-level power selection, shot confirmation, restart/same-Seed controls, and concise/standard/full assistance switching.
-- [ ] 7.4 Add debug overlays for IDs, number/color, velocity, contact points, activation source, wall charge, predicted path, Seed, tick, stop reason, and state Hash.
-- [ ] 7.5 Add minimal, clearly subordinate feedback for collision, activation, copying and dyeing so the triggering ball/wall can be visually inspected.
+- [x] 7.1 Build a fixed-Seed Godot technical table scene with one cue ball, six number balls, standard rails, one copy wall, one dye wall, and no production art dependency.
+- [x] 7.2 Implement the scene adapter that renders rule snapshots and interpolates visuals without feeding node transforms back into simulation state.
+- [x] 7.3 Add aiming, five-level power selection, shot confirmation, restart/same-Seed controls, and concise/standard/full assistance switching.
+- [x] 7.4 Add debug overlays for IDs, number/color, velocity, contact points, activation source, wall charge, predicted path, Seed, tick, stop reason, and state Hash.
+- [x] 7.5 Add minimal, clearly subordinate feedback for collision, activation, copying and dyeing so the triggering ball/wall can be visually inspected.
 
 ## 8. CI, real startup, and review gates
 

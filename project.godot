@@ -4,14 +4,14 @@ config_version=5
 
 [application]
 config/name="Five Ball Grand Slam"
-run/main_scene="res://scenes/main.tscn"
+run/main_scene="res://scenes/technical_table.tscn"
 config/features=PackedStringArray("4.7")
 
 [display]
-window/size/viewport_width=1280
-window/size/viewport_height=720
-window/size/window_width_override=1280
-window/size/window_height_override=720
+window/size/viewport_width=1365
+window/size/viewport_height=768
+window/size/window_width_override=1365
+window/size/window_height_override=768
 window/stretch/mode="canvas_items"
 
 [rendering]
