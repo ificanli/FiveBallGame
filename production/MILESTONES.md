@@ -12,12 +12,14 @@ Pass gate: all local evidence passes; cloud CI produces both artifacts after rem
 
 ## M1 — Deterministic physics table
 
-Status: `PLANNING / NOT APPROVED FOR IMPLEMENTATION`
+Status: `PASSED`
 
-Entry gate: approved OpenSpec change `deterministic-physics-table`. No code before explicit Gate P approval.
+Evidence: approved and completed OpenSpec change `deterministic-physics-table`; 51/51 unit tests; 18 Golden cases × 100 repeats; Windows/Linux CI comparison; clean exports; independent Gate I; explicit human approval.
 
 ## M2 — Single-player core loop
-Status: `BACKLOG`
+Status: `BACKLOG / NOT APPROVED FOR IMPLEMENTATION`
+
+Entry gate: a separate OpenSpec proposal/spec/design/tasks and explicit user Gate P approval.
 
 ## M3 — Buildcraft MVP
 Status: `BACKLOG`

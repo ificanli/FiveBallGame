@@ -8,9 +8,9 @@ Method: fresh clone from GitHub, independent import/test/replay/start/export che
 
 - Engineering: `PASS_ENGINEERING`
 - Rule/spec implementation through task 8.3: `PASS`
-- Visual/input review: `PENDING HUMAN QA`
-- Web feel comparison: `PENDING HUMAN QA`
-- Milestone: `READY_FOR_HUMAN_QA`, not `PASSED`
+- Visual/input review: `PASSED BY HUMAN PRODUCT OWNER`
+- Web feel comparison / overall feel gate: `PASSED BY HUMAN PRODUCT OWNER`
+- Milestone: `PASSED`
 
 ## Independent evidence
 
@@ -42,16 +42,14 @@ Not implemented: combos, scoring, hand slots, settle/hold, overflow, Run, badges
 
 None in automated/Headless evidence.
 
-### P1 requiring human observation
+### Human observation result
 
-- Most current Golden shots terminate at the six-second maximum-duration path. It is deterministic, but may feel too slow or artificially collected.
-- Visual collision radius, line readability, copy/dye attribution and input responsiveness require an actual rendered session.
-- The generated seeded layout is technically valid; whether it makes copy/dye routes conveniently testable must be checked by a person.
+The product owner opened and operated the rendered Godot technical table and explicitly reported `验收通过`. This overall decision accepts the current visual/input behavior and feel gate. No granular per-item scores were supplied, so none are inferred.
 
 ### Process finding
 
 The first clean-clone export attempt failed because the reviewer command omitted `mkdir -p builds/windows`; the project workflow already creates the directory. Re-running with the documented directory preparation succeeded. This was a review-script issue, not an export defect.
 
-## Gate boundary
+## Gate closure
 
-Do not archive the Change or mark M1 passed until tasks 8.4 and 8.5 have human evidence. Task 8.6 remains open until that evidence can be included in the final Gate I conclusion.
+Machine evidence, independent clean-clone review, remote cross-platform CI, and explicit human approval are now present. M1 is passed. Archive the Change after final verification and status commit; do not automatically begin M2.

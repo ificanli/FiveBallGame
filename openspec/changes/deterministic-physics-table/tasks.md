@@ -61,7 +61,7 @@
 - [x] 8.1 Extend CI to run unit tests, Golden coverage, 100-repeat determinism, and Headless technical-table startup on the locked Godot version.
 - [x] 8.2 Run normalized Golden outputs on Windows and Linux, compare them, and upload both outputs plus structured diffs when they diverge.
 - [x] 8.3 Verify clean-clone Windows/Linux exports exclude tests/tools/addons and successfully start at the technical-table entry point.
-- [ ] 8.4 Perform a real local visual/input review at target resolution; capture evidence for all five powers, all assistance modes, copy targeting, dye targeting, restart, and shot termination.
-- [ ] 8.5 Execute the documented webpage comparison shots and record machine facts separately from the author's human assessment of control, bounce intuition, stopping rhythm, and overall feel.
-- [ ] 8.6 Run an independent Gate I review against every requirement; record deviations, regression evidence, commit, and rollback point.
-- [ ] 8.7 Update `production/PROJECT_STATUS.md`, risks, tuning notes, test evidence, and Change task checkboxes; do not mark M1 passed until the human feel gate explicitly passes.
+- [x] 8.4 Perform a real local visual/input review at target resolution; capture evidence for all five powers, all assistance modes, copy targeting, dye targeting, restart, and shot termination.
+- [x] 8.5 Execute the documented webpage comparison shots and record machine facts separately from the author's human assessment of control, bounce intuition, stopping rhythm, and overall feel.
+- [x] 8.6 Run an independent Gate I review against every requirement; record deviations, regression evidence, commit, and rollback point.
+- [x] 8.7 Update `production/PROJECT_STATUS.md`, risks, tuning notes, test evidence, and Change task checkboxes; do not mark M1 passed until the human feel gate explicitly passes.

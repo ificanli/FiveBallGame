@@ -3,7 +3,7 @@
 更新时间：2026-08-17  
 当前阶段：PREPRODUCTION / TOOLING  
 主里程碑：M1 确定性物理技术桌  
-里程碑状态：VERIFYING / HUMAN_QA
+里程碑状态：PASSED
 
 上一里程碑：M0 工具链与正式仓库 — `PASSED`
 
@@ -20,11 +20,11 @@
 - 权威规划与历史资料已复制并记录来源；
 - 未开发正式物理、内容、Steamworks、联网或 MCP。
 
-## 当前进行中 / 阻塞
+## 当前结论
 
-- OpenSpec Change `deterministic-physics-table` 已于 2026-08-17 通过用户 Gate P；
+- OpenSpec Change `deterministic-physics-table` 已于 2026-08-17 通过用户 Gate P，并于 2026-08-18 获真人验收通过；
 - feature 分支、批准基线、网页原型 10 条对照清单、版本化回放契约与纯数据模型已完成；
-- 当前 OpenSpec 进度：40/44 tasks；GdUnit4 51/51 通过；
+- OpenSpec 进度：44/44 tasks；GdUnit4 51/51 通过；
 - 固定 Seed 技术桌、规则快照表现适配、鼠标瞄准、五档力度、三档辅助、同 Seed 重置、调试覆盖与墙体反馈已接入；
 - 五档输入和简洁/标准/完整同源预测完成；Headless 无缓存平均约 5.95/17.49/39.30 ms；
 - 固定步长、动态子步、摩擦/停止、圆—圆与圆—库边碰撞完成；700 次最大力度密集压力运行无漂移/非有限/残留重叠；
@@ -41,6 +41,6 @@
 
 ## 下一决策
 
-1. 用户运行 Windows 技术桌，完成五档力度、三档辅助、复制/染色、重置和收杆节奏检查；
-2. 按 `docs/WEB_PROTOTYPE_PHYSICS_REFERENCE.md` 完成网页原型手感对照；
-3. 将真人结论写入 Gate I，完成 8.4–8.7；未通过则先调参/修正，不进入 M2。
+1. 完成 `deterministic-physics-table` Change 归档与分支合并审核；
+2. 不自动开始 M2；先创建单机核心闭环的独立 OpenSpec Change；
+3. 该 Change 必须覆盖碰撞收球、三态、五球槽、复制/染色槽位同步、最佳组合、结算/保留与六球爆仓，并再次通过 Gate P。
