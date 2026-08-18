@@ -41,6 +41,6 @@
 
 ## 下一决策
 
-1. 完成 `deterministic-physics-table` Change 归档与分支合并审核；
+1. `deterministic-physics-table` 已归档到 `openspec/changes/archive/2026-08-18-deterministic-physics-table/`，四份能力已同步到 `openspec/specs/`；
 2. 不自动开始 M2；先创建单机核心闭环的独立 OpenSpec Change；
 3. 该 Change 必须覆盖碰撞收球、三态、五球槽、复制/染色槽位同步、最佳组合、结算/保留与六球爆仓，并再次通过 Gate P。
