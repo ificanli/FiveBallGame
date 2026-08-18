@@ -13,24 +13,75 @@ env:
 
 jobs:
   verify:
-    runs-on: ubuntu-24.04
-    container:
-      image: barichello/godot-ci:4.7.1
+    name: Verify on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            godot: godot
+            replay: golden-linux.json
+          - os: windows-2022
+            godot: C:\Godot\godot.exe
+            replay: golden-windows.json
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
         with:
           lfs: true
+      - name: Install Godot 4.7.1 on Linux
+        if: runner.os == 'Linux'
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/4.7.1-stable/Godot_v4.7.1-stable_linux.x86_64.zip
+          unzip -q Godot_v4.7.1-stable_linux.x86_64.zip
+          sudo install Godot_v4.7.1-stable_linux.x86_64 /usr/local/bin/godot
+      - name: Install Godot 4.7.1 on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force C:\Godot | Out-Null
+          Invoke-WebRequest https://github.com/godotengine/godot/releases/download/4.7.1-stable/Godot_v4.7.1-stable_win64.exe.zip -OutFile godot.zip
+          Expand-Archive godot.zip C:\Godot -Force
+          Move-Item C:\Godot\Godot_v4.7.1-stable_win64.exe C:\Godot\godot.exe -Force
       - name: Import project
-        run: godot --headless --editor --path . --quit
+        run: ${{ matrix.godot }} --headless --editor --path . --quit
       - name: GdUnit4
-        run: godot --path . -s -d --headless res://addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add tests/unit
-      - name: Golden Replay contract
-        run: godot --headless --path . --script res://tools/golden_replay_smoke.gd
-      - name: Project startup smoke
-        run: godot --headless --path . --quit-after 2
+        run: ${{ matrix.godot }} --path . -s -d --headless res://addons/gdUnit4/bin/GdUnitCmdTool.gd --ignoreHeadlessMode --add tests/unit
+      - name: Golden Replay 100-repeat
+        run: ${{ matrix.godot }} --headless --path . --script res://tools/golden_replay_runner.gd -- --repeat 100 --output ${{ matrix.replay }}
+      - name: Physics stress
+        run: ${{ matrix.godot }} --headless --path . --script res://tools/physics_stress.gd
+      - name: Technical-table startup smoke
+        run: ${{ matrix.godot }} --headless --path . --quit-after 2
+      - name: Upload normalized replay output
+        uses: actions/upload-artifact@v4
+        with:
+          name: replay-${{ runner.os }}-${{ github.sha }}
+          path: ${{ matrix.replay }}
+          if-no-files-found: error
+
+  compare-replays:
+    needs: verify
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: replay-*-${{ github.sha }}
+          path: replay-artifacts
+          merge-multiple: true
+      - name: Compare Windows and Linux normalized results
+        run: python tools/compare_platform_replays.py replay-artifacts/golden-windows.json replay-artifacts/golden-linux.json replay-diff.json
+      - name: Upload cross-platform diff
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: replay-cross-platform-${{ github.sha }}
+          path: replay-diff.json
+          if-no-files-found: error
 
   export:
-    needs: verify
+    needs: compare-replays
     runs-on: ubuntu-24.04
     container:
       image: barichello/godot-ci:4.7.1
@@ -58,9 +109,12 @@ jobs:
         run: |
           mkdir -p builds/${{ matrix.target.dir }}
           godot --headless --path . --export-release "${{ matrix.target.preset }}" "builds/${{ matrix.target.dir }}/${{ matrix.target.file }}"
+      - name: Smoke Linux export
+        if: matrix.target.dir == 'linux'
+        run: chmod +x builds/linux/FiveBallGrandSlam.x86_64 && builds/linux/FiveBallGrandSlam.x86_64 --headless --quit-after 2
       - name: Upload ${{ matrix.target.dir }} artifact
         uses: actions/upload-artifact@v4
         with:
-          name: m0-${{ matrix.target.dir }}-${{ github.sha }}
+          name: m1-${{ matrix.target.dir }}-${{ github.sha }}
           path: builds/${{ matrix.target.dir }}/
           if-no-files-found: error

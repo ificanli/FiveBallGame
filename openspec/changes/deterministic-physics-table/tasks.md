@@ -58,7 +58,7 @@
 
 ## 8. CI, real startup, and review gates
 
-- [ ] 8.1 Extend CI to run unit tests, Golden coverage, 100-repeat determinism, and Headless technical-table startup on the locked Godot version.
+- [x] 8.1 Extend CI to run unit tests, Golden coverage, 100-repeat determinism, and Headless technical-table startup on the locked Godot version.
 - [ ] 8.2 Run normalized Golden outputs on Windows and Linux, compare them, and upload both outputs plus structured diffs when they diverge.
 - [ ] 8.3 Verify clean-clone Windows/Linux exports exclude tests/tools/addons and successfully start at the technical-table entry point.
 - [ ] 8.4 Perform a real local visual/input review at target resolution; capture evidence for all five powers, all assistance modes, copy targeting, dye targeting, restart, and shot termination.
