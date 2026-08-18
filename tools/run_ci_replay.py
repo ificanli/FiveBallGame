@@ -14,14 +14,25 @@ parser.add_argument("--output", required=True)
 args = parser.parse_args()
 
 command = [args.godot, "--headless", "--path", args.project, "--script", args.script, "--", "--repeat", str(args.repeat)]
-completed = subprocess.run(command, cwd=args.project, text=True, encoding="utf-8", errors="replace", capture_output=True)
-print(completed.stdout, end="")
-print(completed.stderr, end="", file=sys.stderr)
+completed = subprocess.run(command, cwd=args.project, capture_output=True)
+
+def decode(data: bytes) -> str:
+    for encoding in ("utf-8", "gb18030", "cp1252"):
+        try:
+            return data.decode(encoding)
+        except UnicodeDecodeError:
+            pass
+    return data.decode("utf-8", errors="replace")
+
+stdout = decode(completed.stdout)
+stderr = decode(completed.stderr)
+print(stdout, end="")
+print(stderr, end="", file=sys.stderr)
 if completed.returncode != 0:
     raise SystemExit(completed.returncode)
 
 payload = None
-for line in reversed(completed.stdout.splitlines()):
+for line in reversed(stdout.splitlines()):
     try:
         candidate = json.loads(line)
     except json.JSONDecodeError:
