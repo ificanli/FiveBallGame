@@ -33,12 +33,12 @@
 
 ## 5. Shot input and shared-source prediction
 
-- [ ] 5.1 Add failing tests for all five fixed power mappings, replay round-trips, zero/non-finite direction rejection, and equivalent repeated input.
-- [ ] 5.2 Implement legal shot creation with five discrete power levels and reproducible serialized direction.
-- [ ] 5.3 Add failing tests that compare predicted and actual first collision object/type/order, including copy-wall and dye-wall routes.
-- [ ] 5.4 Implement one simulation entry point used by both full motion and cloned-snapshot prediction; prohibit UI-local collision formulas.
-- [ ] 5.5 Implement concise, standard, and full prediction budgets and outputs, with stale-request cancellation/cache keys and no automatic best-shot recommendation.
-- [ ] 5.6 Measure prediction latency for the seven-ball technical table and record mode budgets; optimize only with evidence.
+- [x] 5.1 Add failing tests for all five fixed power mappings, replay round-trips, zero/non-finite direction rejection, and equivalent repeated input.
+- [x] 5.2 Implement legal shot creation with five discrete power levels and reproducible serialized direction.
+- [x] 5.3 Add failing tests that compare predicted and actual first collision object/type/order, including copy-wall and dye-wall routes.
+- [x] 5.4 Implement one simulation entry point used by both full motion and cloned-snapshot prediction; prohibit UI-local collision formulas.
+- [x] 5.5 Implement concise, standard, and full prediction budgets and outputs, with stale-request cancellation/cache keys and no automatic best-shot recommendation.
+- [x] 5.6 Measure prediction latency for the seven-ball technical table and record mode budgets; optimize only with evidence.
 
 ## 6. Golden Replay execution and coverage
 

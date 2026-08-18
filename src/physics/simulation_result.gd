@@ -7,6 +7,7 @@ var stop_reason := ""
 var events: Array[PhysicsEvent] = []
 var final_snapshot: TableSnapshot
 var state_hash := ""
+var trajectories: Dictionary = {}
 var error: Dictionary = {}
 
 
@@ -21,5 +22,6 @@ func to_dict() -> Dictionary:
 		"events": event_data,
 		"final_snapshot": final_snapshot.to_dict() if final_snapshot != null else null,
 		"state_hash": state_hash,
+		"trajectories": trajectories.duplicate(true),
 		"error": error.duplicate(true),
 	}

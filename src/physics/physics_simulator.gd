@@ -4,7 +4,13 @@ extends RefCounted
 const POSITION_EPSILON := 0.0001
 
 
-func simulate(initial: TableSnapshot, shot: ShotInput, config: PhysicsConfig = null) -> SimulationResult:
+func simulate(
+	initial: TableSnapshot,
+	shot: ShotInput,
+	config: PhysicsConfig = null,
+	tick_budget: int = -1,
+	capture_trajectories: bool = false
+) -> SimulationResult:
 	var used_config := config if config != null else PhysicsConfig.default_config()
 	var result := SimulationResult.new()
 	if not shot.is_valid():
@@ -19,20 +25,24 @@ func simulate(initial: TableSnapshot, shot: ShotInput, config: PhysicsConfig = n
 		return result
 	WallEffectResolver.new().reset_for_new_shot(state)
 	cue.velocity = shot.direction * used_config.power_speed(shot.power_level)
-	return _run(state, used_config)
+	return _run(state, used_config, tick_budget, capture_trajectories)
 
 
 func simulate_existing_motion(initial: TableSnapshot, config: PhysicsConfig = null) -> SimulationResult:
 	return _run(initial.duplicate_state(), config if config != null else PhysicsConfig.default_config())
 
 
-func _run(state: TableSnapshot, config: PhysicsConfig) -> SimulationResult:
+func _run(state: TableSnapshot, config: PhysicsConfig, tick_budget: int = -1, capture_trajectories: bool = false) -> SimulationResult:
 	var result := SimulationResult.new()
 	result.status = "success"
-	var maximum_ticks := ceili(config.maximum_shot_seconds / config.fixed_delta)
+	var natural_maximum_ticks := ceili(config.maximum_shot_seconds / config.fixed_delta)
+	var maximum_ticks := mini(natural_maximum_ticks, tick_budget) if tick_budget > 0 else natural_maximum_ticks
+	var is_preview_budget := tick_budget > 0 and tick_budget < natural_maximum_ticks
 	var finish_ticks := maxi(1, ceili(config.low_speed_finish_seconds / config.fixed_delta))
 	var low_speed_ticks := 0
-	var timeout_finish_start := maxi(0, maximum_ticks - finish_ticks)
+	var timeout_finish_start := maxi(0, maximum_ticks - finish_ticks) if not is_preview_budget else maximum_ticks
+	if capture_trajectories:
+		_capture_trajectory_sample(result, state, 0)
 	for tick in maximum_ticks:
 		if _all_stopped(state, config.stop_speed) and tick < timeout_finish_start:
 			_zero_all(state)
@@ -40,6 +50,8 @@ func _run(state: TableSnapshot, config: PhysicsConfig) -> SimulationResult:
 			result.stop_reason = "all_stopped"
 			return _finish_result(result, state)
 		step_tick(state, config, tick, result.events)
+		if capture_trajectories:
+			_capture_trajectory_sample(result, state, tick + 1)
 		if _all_below(state, config.low_speed_threshold):
 			low_speed_ticks += 1
 			_apply_finish_damping(state, low_speed_ticks, finish_ticks)
@@ -54,8 +66,9 @@ func _run(state: TableSnapshot, config: PhysicsConfig) -> SimulationResult:
 			result.error = {"code": "non_finite_state", "tick": tick + 1}
 			return _finish_result(result, state)
 	result.ticks = maximum_ticks
-	result.stop_reason = "maximum_duration"
-	_zero_all(state)
+	result.stop_reason = "preview_budget" if is_preview_budget else "maximum_duration"
+	if not is_preview_budget:
+		_zero_all(state)
 	return _finish_result(result, state)
 
 
@@ -284,6 +297,14 @@ func _state_is_finite(state: TableSnapshot) -> bool:
 		if not ball.position.is_finite() or not ball.velocity.is_finite():
 			return false
 	return true
+
+
+func _capture_trajectory_sample(result: SimulationResult, state: TableSnapshot, tick: int) -> void:
+	for ball: BallState in state.balls:
+		var key := str(ball.id)
+		if not result.trajectories.has(key):
+			result.trajectories[key] = []
+		result.trajectories[key].append({"tick": tick, "position": {"x": ball.position.x, "y": ball.position.y}})
 
 
 func _finish_result(result: SimulationResult, state: TableSnapshot) -> SimulationResult:
