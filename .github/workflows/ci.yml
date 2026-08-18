@@ -59,11 +59,26 @@ jobs:
         run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --script res://tools/core_loop_stress.gd
       - name: Technical-table startup smoke
         run: ${{ matrix.godot }} --headless --path "${{ github.workspace }}" --quit-after 2
+      - name: Package normalized replay output
+        shell: python
+        run: |
+          import os, pathlib, zipfile
+          root = pathlib.Path(os.environ["GITHUB_WORKSPACE"])
+          source = root / "replay-output"
+          expected = [source / "${{ matrix.replay }}", source / "core-${{ matrix.replay }}"]
+          missing = [str(path) for path in expected if not path.is_file()]
+          if missing:
+              raise SystemExit(f"Missing replay outputs: {missing}; found={list(source.glob('*')) if source.exists() else 'no directory'}")
+          archive = root / "replay-${{ runner.os }}.zip"
+          with zipfile.ZipFile(archive, "w", zipfile.ZIP_DEFLATED) as output:
+              for path in expected:
+                  output.write(path, path.name)
+          print(f"Packaged {archive} ({archive.stat().st_size} bytes)")
       - name: Upload normalized replay output
         uses: actions/upload-artifact@v4
         with:
           name: replay-${{ runner.os }}-${{ github.sha }}
-          path: replay-output/
+          path: replay-${{ runner.os }}.zip
           if-no-files-found: error
 
   compare-replays:
@@ -76,10 +91,14 @@ jobs:
           pattern: replay-*-${{ github.sha }}
           path: replay-artifacts
           merge-multiple: true
+      - name: Extract replay packages
+        run: |
+          unzip -o replay-artifacts/replay-Windows.zip -d replay-artifacts/windows
+          unzip -o replay-artifacts/replay-Linux.zip -d replay-artifacts/linux
       - name: Compare Windows and Linux normalized results
         run: |
-          python tools/compare_platform_replays.py replay-artifacts/golden-windows.json replay-artifacts/golden-linux.json replay-diff.json
-          python tools/compare_platform_replays.py replay-artifacts/core-golden-windows.json replay-artifacts/core-golden-linux.json core-replay-diff.json
+          python tools/compare_platform_replays.py replay-artifacts/windows/golden-windows.json replay-artifacts/linux/golden-linux.json replay-diff.json
+          python tools/compare_platform_replays.py replay-artifacts/windows/core-golden-windows.json replay-artifacts/linux/core-golden-linux.json core-replay-diff.json
       - name: Upload cross-platform diff
         if: always()
         uses: actions/upload-artifact@v4
