@@ -7,6 +7,7 @@ const COLOR_MAP := {
 	"yellow": Color("e6b94f"), "green": Color("51b977"), "": Color("f2eee4")
 }
 const MODES := ["concise", "standard", "full"]
+const MODE_KEYS := ["assist.concise", "assist.standard", "assist.full"]
 
 var seed := 20260818
 var controller: CoreLoopController
@@ -20,7 +21,7 @@ var playing := false
 var playback_result: SimulationResult
 var playback_elapsed := 0.0
 var display_positions: Dictionary = {}
-var feedback_text := "Aim, shoot, then SETTLE or KEEP"
+var feedback_text := LocalizationZhCn.text("feedback.ready")
 var feedback_color := Color("8fd7cf")
 
 var snapshot: TableSnapshot:
@@ -90,7 +91,7 @@ func reset_same_seed() -> void:
 	controller = CoreLoopController.new(CoreLoopSnapshot.create_tutorial(seed))
 	playback_result = null
 	playback_elapsed = 0.0
-	feedback_text = "Tutorial reset · build a combo"
+	feedback_text = LocalizationZhCn.text("feedback.reset")
 	feedback_color = Color("8fd7cf")
 	_apply_snapshot_positions()
 	_refresh_preview()
@@ -102,20 +103,20 @@ func shoot() -> void:
 		return
 	var result := controller.shoot(ShotInput.create(1, aim_direction, power_level), true)
 	if not result.ok:
-		feedback_text = "Shot rejected · %s" % result.code
+		feedback_text = LocalizationZhCn.format("feedback.rejected", [result.code])
 		feedback_color = Color("ff7a7a")
 		return
 	playback_result = result.simulation
 	playing = true
 	playback_elapsed = 0.0
-	feedback_text = "Shot playing"
+	feedback_text = LocalizationZhCn.text("feedback.shot")
 	feedback_color = Color("f5cf72")
 
 
 func settle() -> void:
 	var result := controller.settle()
 	if result.ok:
-		feedback_text = "SETTLED +%d" % result.banked_score
+		feedback_text = LocalizationZhCn.format("feedback.settled", [result.banked_score])
 		feedback_color = Color("f5cf72")
 		_set_feedback_from_state()
 		_refresh_preview()
@@ -125,7 +126,7 @@ func settle() -> void:
 func keep() -> void:
 	var result := controller.keep()
 	if result.ok:
-		feedback_text = "KEPT · risk another shot"
+		feedback_text = LocalizationZhCn.text("feedback.kept")
 		feedback_color = Color("8fd7cf")
 		_refresh_preview()
 		queue_redraw()
@@ -188,25 +189,25 @@ func _apply_playback_tick(tick: int) -> void:
 func _set_feedback_from_state() -> void:
 	var state := controller.state
 	if state.phase == "won":
-		feedback_text = "TABLE CLEARED · YOU WIN"
+		feedback_text = LocalizationZhCn.text("feedback.win")
 		feedback_color = Color("6ff0aa")
 	elif state.phase == "lost":
-		feedback_text = "OUT OF STROKES · TRY AGAIN"
+		feedback_text = LocalizationZhCn.text("feedback.loss")
 		feedback_color = Color("ff7a7a")
 	elif state.shot_busted:
-		feedback_text = "BUST! Sixth slot lost the hand"
+		feedback_text = LocalizationZhCn.text("feedback.bust")
 		feedback_color = Color("ff6b6b")
 	elif state.phase == "post_shot_decision":
-		feedback_text = "Choose SETTLE +%d or KEEP" % state.combo.score
+		feedback_text = LocalizationZhCn.format("feedback.decide", [state.combo.score])
 		feedback_color = Color("f5cf72")
 	else:
-		feedback_text = "No collection · aim again"
+		feedback_text = LocalizationZhCn.text("feedback.empty")
 
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("07111d"))
-	draw_string(ThemeDB.fallback_font, Vector2(55, 38), "FIVE BALL GRAND SLAM · CORE LOOP TABLE", HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("dceaf7"))
-	draw_string(ThemeDB.fallback_font, Vector2(1040, 38), "M2 · TUTORIAL", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("8fd7cf"))
+	draw_string(ThemeDB.fallback_font, Vector2(55, 38), "%s · %s" % [LocalizationZhCn.text("game.title"), LocalizationZhCn.text("screen.tutorial")], HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("dceaf7"))
+	draw_string(ThemeDB.fallback_font, Vector2(1040, 38), "M3 · 中文版", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("8fd7cf"))
 	draw_rect(TABLE_RECT.grow(12), Color("172638"), true)
 	draw_rect(TABLE_RECT, Color("0b493f"), true)
 	draw_rect(TABLE_RECT, Color("85a496"), false, 3.0)
@@ -215,7 +216,7 @@ func _draw() -> void:
 	_draw_balls()
 	_draw_side_panel()
 	draw_string(ThemeDB.fallback_font, Vector2(55, 735), feedback_text, HORIZONTAL_ALIGNMENT_LEFT, 700, 18, feedback_color)
-	draw_string(ThemeDB.fallback_font, Vector2(760, 735), "Click/Space shoot · S settle · K keep · 1–5 power · Tab assist · R reset", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("9db1c4"))
+	draw_string(ThemeDB.fallback_font, Vector2(700, 735), LocalizationZhCn.text("controls"), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("9db1c4"))
 
 
 func _draw_preview() -> void:
@@ -236,7 +237,7 @@ func _draw_walls() -> void:
 		var rect := Rect2(TABLE_RECT.position + wall.rect.position, wall.rect.size)
 		var color: Color = Color("49d4ca") if wall.kind == "copy" else COLOR_MAP.get(wall.color_id, Color.WHITE)
 		draw_rect(rect, color, true)
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(-8, -8), "COPY %s" % ("●" if wall.charge > 0 else "○") if wall.kind == "copy" else "DYE RED", HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(-8, -8), "%s %s" % [LocalizationZhCn.text("hud.wall.copy"), "●" if wall.charge > 0 else "○"] if wall.kind == "copy" else "%s·红" % LocalizationZhCn.text("hud.wall.dye"), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, color)
 
 
 func _draw_balls() -> void:
@@ -253,10 +254,10 @@ func _draw_balls() -> void:
 func _draw_side_panel() -> void:
 	var state := controller.state
 	var x := 1080.0
-	draw_string(ThemeDB.fallback_font, Vector2(x, 90), "TARGET  %d" % state.target_score, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("9db1c4"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 125), "SCORE   %d" % state.score, HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color("f5cf72"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 160), "STROKES %d" % state.strokes_remaining, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("dceaf7"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 205), "HAND %d/5" % state.hand.size(), HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("8fd7cf"))
+	draw_string(ThemeDB.fallback_font, Vector2(x, 90), "%s  %d" % [LocalizationZhCn.text("hud.target"), state.target_score], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("9db1c4"))
+	draw_string(ThemeDB.fallback_font, Vector2(x, 125), "%s  %d" % [LocalizationZhCn.text("hud.score"), state.score], HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color("f5cf72"))
+	draw_string(ThemeDB.fallback_font, Vector2(x, 160), "%s  %d" % [LocalizationZhCn.text("hud.strokes"), state.strokes_remaining], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("dceaf7"))
+	draw_string(ThemeDB.fallback_font, Vector2(x, 205), "%s %d/5" % [LocalizationZhCn.text("hud.hand"), state.hand.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("8fd7cf"))
 	for index in 5:
 		var rect := Rect2(x + (index % 3) * 78, 225 + (index / 3) * 75, 66, 60)
 		draw_rect(rect, Color("132334"), true)
@@ -265,14 +266,14 @@ func _draw_side_panel() -> void:
 			var slot: HandSlot = state.hand[index]
 			draw_circle(rect.get_center() - Vector2(0, 7), 16, COLOR_MAP.get(slot.color_id, Color.WHITE))
 			draw_string(ThemeDB.fallback_font, rect.get_center() + Vector2(-5, 0), str(slot.number), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("102030"))
-			draw_string(ThemeDB.fallback_font, rect.position + Vector2(5, 54), "COPY" if not slot.has_physical_ball else "#%d" % slot.physical_ball_id, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("9db1c4"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 390), "BEST  %s" % str(state.combo.type).replace("_", " ").to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("dceaf7"))
+			draw_string(ThemeDB.fallback_font, rect.position + Vector2(5, 54), "副本" if not slot.has_physical_ball else "球#%d" % slot.physical_ball_id, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("9db1c4"))
+	draw_string(ThemeDB.fallback_font, Vector2(x, 390), "%s  %s" % [LocalizationZhCn.text("hud.best"), LocalizationZhCn.combo_name(str(state.combo.type))], HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("dceaf7"))
 	draw_string(ThemeDB.fallback_font, Vector2(x, 420), "%d × %d = %d" % [state.combo.number_sum, state.combo.multiplier, state.combo.score], HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("f5cf72"))
-	_draw_button(Rect2(x, 500, 120, 42), "SETTLE [S]", legal_actions().has("settle"))
-	_draw_button(Rect2(x + 130, 500, 110, 42), "KEEP [K]", legal_actions().has("keep"))
-	_draw_button(Rect2(x, 555, 240, 38), "RESET SAME TABLE [R]", true)
-	draw_string(ThemeDB.fallback_font, Vector2(x, 630), "Power %d · %s" % [power_level, MODES[assistance_index]], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("9db1c4"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 655), "Phase · %s" % state.phase.to_upper(), HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("9db1c4"))
+	_draw_button(Rect2(x, 500, 120, 42), "%s [S]" % LocalizationZhCn.text("action.settle"), legal_actions().has("settle"))
+	_draw_button(Rect2(x + 130, 500, 110, 42), "%s [K]" % LocalizationZhCn.text("action.keep"), legal_actions().has("keep"))
+	_draw_button(Rect2(x, 555, 240, 38), "%s [R]" % LocalizationZhCn.text("action.reset"), true)
+	draw_string(ThemeDB.fallback_font, Vector2(x, 630), "%s %d · %s" % [LocalizationZhCn.text("hud.power"), power_level, LocalizationZhCn.text(MODE_KEYS[assistance_index])], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("9db1c4"))
+	draw_string(ThemeDB.fallback_font, Vector2(x, 655), "%s · %s" % [LocalizationZhCn.text("hud.phase"), LocalizationZhCn.phase_name(state.phase)], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("9db1c4"))
 
 
 func _draw_button(rect: Rect2, label: String, enabled: bool) -> void:

@@ -1,7 +1,7 @@
 ## 1. Approved baseline and scope safety
 
-- [ ] 1.1 Record M3 Gate P approval commit, M2 rollback point, exact 18-badge roster, six tools, three tables, CUT list and Chinese UI requirement.
-- [ ] 1.2 Create `feature/buildcraft-mvp` from clean approved `main`; run all M1/M2 tests, replays and startup baselines before rule changes.
+- [x] 1.1 Record M3 Gate P approval commit, M2 rollback point, exact 18-badge roster, six tools, three tables, CUT list and Chinese UI requirement.
+- [x] 1.2 Create `feature/buildcraft-mvp` from clean approved planning commit over `main`; run the 71-case M1/M2 suite and single-repeat M1/M2 replay baselines before rule changes, retaining full-repeat/stress for Gate I.
 - [ ] 1.3 Build requirement-to-test traceability and content-role matrix proving three builds each have starter/core/amplifier/risk-or-finisher roles and at least 13/18 decision-changing badges.
 
 ## 2. Simplified Chinese foundation
