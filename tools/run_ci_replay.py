@@ -34,7 +34,9 @@ if completed.returncode != 0:
     raise SystemExit(completed.returncode)
 
 payload = None
-for line in reversed(stdout.splitlines()):
+# Godot's Windows console build can route script print output to stderr.
+# Parse both streams while keeping them separately visible in CI logs.
+for line in reversed((stdout + "\n" + stderr).splitlines()):
     try:
         candidate = json.loads(line)
     except json.JSONDecodeError:
