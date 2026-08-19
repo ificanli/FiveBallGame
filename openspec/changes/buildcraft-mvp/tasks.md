@@ -2,37 +2,37 @@
 
 - [x] 1.1 Record M3 Gate P approval commit, M2 rollback point, exact 18-badge roster, six tools, three tables, CUT list and Chinese UI requirement.
 - [x] 1.2 Create `feature/buildcraft-mvp` from clean approved planning commit over `main`; run the 71-case M1/M2 suite and single-repeat M1/M2 replay baselines before rule changes, retaining full-repeat/stress for Gate I.
-- [ ] 1.3 Build requirement-to-test traceability and content-role matrix proving three builds each have starter/core/amplifier/risk-or-finisher roles and at least 13/18 decision-changing badges.
+- [x] 1.3 Build requirement-to-test traceability and content-role matrix proving three builds each have starter/core/amplifier/risk-or-finisher roles and at least 13/18 decision-changing badges.
 
 ## 2. Simplified Chinese foundation
 
-- [ ] 2.1 Add keyed Simplified Chinese localization resources for existing M2 HUD, controls, phases, combo names, result and error messages while retaining English internal IDs.
-- [ ] 2.2 Replace all current player-visible English prototype literals with localization lookups; add automated forbidden-label and missing-key audits.
+- [x] 2.1 Add keyed Simplified Chinese localization resources for existing M2 HUD, controls, phases, combo names, result and error messages while retaining English internal IDs.
+- [x] 2.2 Replace all current player-visible English prototype literals with localization lookups; add automated forbidden-label and missing-key audits.
 - [ ] 2.3 Add a redistributable Chinese font/fallback decision with license record and layout tests at 1280×720 and 1920×1080.
 - [ ] 2.4 Add Chinese names/descriptions/tags for all M3 badges, tools, tables, rewards and statistics; test longest-text wrapping and no tofu glyphs in exports.
 
 ## 3. Run data model and deterministic random streams
 
-- [ ] 3.1 Write failing tests for versioned `RunSnapshot`, badge instances/order/growth, inventory, reward state, table index, statistics and canonical round-trip/hash.
-- [ ] 3.2 Implement pure-data Run model with no Node references and explicit legal commands/phases.
-- [ ] 3.3 Implement named `reward`, `replenishment`, and `table` Seed streams with persisted counters; test that preview/UI lifecycle never consumes randomness.
-- [ ] 3.4 Add validators rejecting unknown content IDs, duplicate badge instances where forbidden, over-capacity inventories, invalid phases, non-finite score data and incompatible versions.
+- [x] 3.1 Write failing tests for versioned `RunSnapshot`, badge instances/order/growth, inventory, reward state, table index, statistics and canonical round-trip/hash.
+- [x] 3.2 Implement pure-data Run model with no Node references and explicit legal commands/phases.
+- [x] 3.3 Implement named `reward`, `replenishment`, and `table` Seed streams with persisted counters; test that preview/UI lifecycle never consumes randomness.
+- [x] 3.4 Add validators rejecting unknown content IDs, duplicate badge instances where forbidden, over-capacity inventories, invalid phases, non-finite score data and incompatible versions.
 
 ## 4. Settlement context and badge pipeline
 
-- [ ] 4.1 Write failing tests that freeze power, rail hits, activation depth, copy/dye events, best-combo participants, pollution, keep history and final-stroke evidence by stable IDs.
-- [ ] 4.2 Implement immutable `SettlementContext` generated from M2 snapshots/events and reused by preview, settlement and replay.
-- [ ] 4.3 Write table-driven tests for ordered `+基础分`, `+倍率`, `×倍率`, non-trigger steps, integer arithmetic, bounds and preview/commit equality.
-- [ ] 4.4 Implement deterministic `BadgeSettlementPipeline` and serializable per-badge trace; commit growth only on real settlement.
+- [x] 4.1 Write failing tests that freeze power, rail hits, activation depth, copy/dye events, best-combo participants, pollution, keep history and final-stroke evidence by stable IDs.
+- [x] 4.2 Implement immutable `SettlementContext` generated from M2 snapshots/events and reused by preview, settlement and replay.
+- [x] 4.3 Write table-driven tests for ordered `+基础分`, `+倍率`, `×倍率`, non-trigger steps, integer arithmetic, bounds and preview/commit equality.
+- [x] 4.4 Implement deterministic `BadgeSettlementPipeline` and serializable per-badge trace; commit growth only on real settlement.
 
 ## 5. Eighteen-badge content
 
-- [ ] 5.1 Add schema/config audit and failing tests for the approved 6 pure-combo badges: 双生环、顺行仪、纯色灯、完美球组、牌型升级器、纯色顺大奖.
-- [ ] 5.2 Implement and balance the six pure-combo badges with participant/pollution and growth edge cases.
-- [ ] 5.3 Add tests and implementation for the approved 6 rail-chain badges: 贴库客、第五档、轻推大师、连锁反应、反弹专家、多米诺.
-- [ ] 5.4 Add tests and implementation for the approved 6 wall-risk badges: 复印税、调色盘、双充能镜、墙体回路、满仓红利、贪心基金.
-- [ ] 5.5 Add reorder, five-slot, replacement, cross-table growth and new-run reset tests; reject arbitrary scripted effects and any unregistered handler.
-- [ ] 5.6 Run counterfactual route fixtures for all 18; replace or structurally revise zero-trigger/unconditional/directionless badges instead of padding the catalog.
+- [x] 5.1 Add schema/config audit and failing tests for the approved 6 pure-combo badges: 双生环、顺行仪、纯色灯、完美球组、牌型升级器、纯色顺大奖.
+- [x] 5.2 Implement and balance the six pure-combo badges with participant/pollution and growth edge cases.
+- [x] 5.3 Add tests and implementation for the approved 6 rail-chain badges: 贴库客、第五档、轻推大师、连锁反应、反弹专家、多米诺.
+- [x] 5.4 Add tests and implementation for the approved 6 wall-risk badges: 复印税、调色盘、双充能镜、墙体回路、满仓红利、贪心基金.
+- [x] 5.5 Add reorder, five-slot, replacement, cross-table growth and new-run reset tests; reject arbitrary scripted effects and any unregistered handler.
+- [x] 5.6 Run counterfactual route fixtures for all 18; replace or structurally revise zero-trigger/unconditional/directionless badges instead of padding the catalog.
 
 ## 6. Six consumable tools
 

@@ -12,7 +12,7 @@ var reward_index := 0
 var reward_choices: Array[String] = []
 var badges: Array[String] = []
 var badge_growth: Dictionary = {}
-var tools: Dictionary = {"table_reset":1}
+var tools: Dictionary = {"table_reset":1,"soft_pocket":1,"color_chalk":1}
 var active_protection := ""
 var current_table: CoreLoopSnapshot
 var table_results: Array[Dictionary] = []

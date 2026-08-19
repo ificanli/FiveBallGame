@@ -36,7 +36,7 @@ const TEXT := {
 	"feedback.decide": "选择结算 +%d，或保留后再打一杆",
 	"feedback.empty": "本杆没有收球，请重新瞄准",
 	"feedback.rejected": "无法出杆：%s",
-	"controls": "鼠标瞄准 · 点击/空格出杆 · S 结算 · K 保留 · 1～5 力度 · Tab 辅助线 · R 重置",
+	"controls": "鼠标瞄准 · 点击/空格出杆 · S 结算 · K 保留 · Q 道具 · 1～5 力度 · Tab 辅助线 · R 重置",
 	"assist.concise": "简洁",
 	"assist.standard": "标准",
 	"assist.full": "完整",

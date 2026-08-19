@@ -79,6 +79,8 @@ func _gui_input(event: InputEvent) -> void:
 				keep()
 			KEY_R:
 				reset_same_seed()
+			KEY_Q:
+				use_first_available_tool()
 			KEY_TAB:
 				if _can_aim():
 					assistance_index = (assistance_index + 1) % MODES.size()
@@ -166,6 +168,25 @@ func keep() -> void:
 		_refresh_preview()
 		queue_redraw()
 
+
+func use_first_available_tool() -> void:
+	if run_controller == null or controller == null:
+		return
+	var table := controller.state
+	var result := {}
+	if int(run_controller.state.tools.get("soft_pocket",0)) > 0 and table.phase == "aiming":
+		result = run_controller.use_tool("soft_pocket")
+	elif int(run_controller.state.tools.get("color_chalk",0)) > 0 and table.phase == "post_shot_decision":
+		for slot: HandSlot in table.hand:
+			if slot.has_physical_ball:
+				result = run_controller.use_tool("color_chalk", {"ball_id":slot.physical_ball_id,"color_id":"red"})
+				break
+	elif int(run_controller.state.tools.get("table_reset",0)) > 0 and table.phase == "post_shot_decision":
+		result = run_controller.use_tool("table_reset")
+		controller = run_controller.table_controller
+	if result.get("ok",false):
+		feedback_text = "道具已使用"
+		_apply_snapshot_positions(); _refresh_preview(); queue_redraw()
 
 func legal_actions() -> Array[String]:
 	return controller.allowed_actions() if controller != null else []
@@ -360,6 +381,16 @@ func _draw_side_panel() -> void:
 	_draw_button(Rect2(x, 555, 240, 38), "%s [R]" % LocalizationZhCn.text("action.reset"), true)
 	draw_string(ThemeDB.fallback_font, Vector2(x, 630), "%s %d · %s" % [LocalizationZhCn.text("hud.power"), power_level, LocalizationZhCn.text(MODE_KEYS[assistance_index])], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("9db1c4"))
 	draw_string(ThemeDB.fallback_font, Vector2(x, 655), "%s · %s" % [LocalizationZhCn.text("hud.phase"), LocalizationZhCn.phase_name(state.phase)], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("9db1c4"))
+	var badge_names: Array[String] = []
+	for id: String in run_controller.state.badges:
+		var badge: Dictionary = BadgeCatalog.get_badge(id)
+		badge_names.append(str(badge.get("name", id)))
+	draw_string(ThemeDB.fallback_font, Vector2(x, 680), "徽章 · %s" % (" / ".join(badge_names) if not badge_names.is_empty() else "暂无"), HORIZONTAL_ALIGNMENT_LEFT, 250, 11, Color("f5cf72"))
+	var tool_names: Array[String] = []
+	for id: String in run_controller.state.tools.keys():
+		var tool: Dictionary = ToolCatalog.get_tool(id)
+		tool_names.append("%s×%d" % [str(tool.get("name", id)), int(run_controller.state.tools[id])])
+	draw_string(ThemeDB.fallback_font, Vector2(x, 705), "道具 [Q] · %s" % (" / ".join(tool_names) if not tool_names.is_empty() else "暂无"), HORIZONTAL_ALIGNMENT_LEFT, 250, 11, Color("8fd7cf"))
 
 
 func _draw_button(rect: Rect2, label: String, enabled: bool) -> void:
