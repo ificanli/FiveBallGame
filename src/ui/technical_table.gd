@@ -9,7 +9,8 @@ const COLOR_MAP := {
 const MODES := ["concise", "standard", "full"]
 const MODE_KEYS := ["assist.concise", "assist.standard", "assist.full"]
 
-var seed := 20260818
+var seed := 20260819
+var run_controller: RunController
 var controller: CoreLoopController
 var preview_service := TrajectoryPreview.new()
 var aim_direction := Vector2.RIGHT
@@ -32,8 +33,8 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_ALL
 	grab_focus()
-	reset_same_seed()
-	print("M2_TUTORIAL_READY seed=%d rules=%s" % [seed, CoreLoopSnapshot.RULES_VERSION])
+	start_run_same_seed()
+	print("M3_RUN_READY seed=%d rules=%s" % [seed, RunSnapshot.RULES_VERSION])
 
 
 func _process(delta: float) -> void:
@@ -60,7 +61,13 @@ func _gui_input(event: InputEvent) -> void:
 		_handle_click((event as InputEventMouseButton).position)
 	elif event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
-			KEY_1, KEY_2, KEY_3, KEY_4, KEY_5:
+			KEY_1, KEY_2, KEY_3:
+				if run_controller != null and run_controller.state.phase == "reward":
+					choose_reward(int(event.keycode - KEY_1))
+				elif _can_aim():
+					power_level = int(event.keycode - KEY_0)
+					_refresh_preview()
+			KEY_4, KEY_5:
 				if _can_aim():
 					power_level = int(event.keycode - KEY_0)
 					_refresh_preview()
@@ -86,16 +93,32 @@ func _gui_input(event: InputEvent) -> void:
 					_refresh_preview()
 
 
-func reset_same_seed() -> void:
+func start_run_same_seed() -> void:
 	playing = false
-	controller = CoreLoopController.new(CoreLoopSnapshot.create_tutorial(seed))
+	run_controller = RunController.new(RunSnapshot.create(seed))
+	controller = null
 	playback_result = null
 	playback_elapsed = 0.0
-	feedback_text = LocalizationZhCn.text("feedback.reset")
+	feedback_text = "请选择第一枚桌边徽章"
 	feedback_color = Color("8fd7cf")
-	_apply_snapshot_positions()
-	_refresh_preview()
+	display_positions.clear()
+	preview = {}
 	queue_redraw()
+
+func reset_same_seed() -> void:
+	start_run_same_seed()
+
+func choose_reward(index: int) -> void:
+	if run_controller == null or run_controller.state.phase != "reward" or index < 0 or index >= run_controller.state.reward_choices.size():
+		return
+	var badge_id: String = run_controller.state.reward_choices[index]
+	var result := run_controller.choose_reward(badge_id)
+	if result.ok:
+		controller = run_controller.table_controller
+		feedback_text = "已装备「%s」，进入%s" % [BadgeCatalog.get_badge(badge_id).name, RunContent.table_config(run_controller.state.table_index).name]
+		_apply_snapshot_positions()
+		_refresh_preview()
+		queue_redraw()
 
 
 func shoot() -> void:
@@ -114,17 +137,29 @@ func shoot() -> void:
 
 
 func settle() -> void:
-	var result := controller.settle()
+	if run_controller == null or controller == null:
+		return
+	var result := run_controller.settle(_settlement_evidence())
 	if result.ok:
 		feedback_text = LocalizationZhCn.format("feedback.settled", [result.banked_score])
 		feedback_color = Color("f5cf72")
-		_set_feedback_from_state()
+		if run_controller.state.phase == "reward":
+			controller = null
+			feedback_text = "球桌达标！请选择下一枚徽章"
+		elif run_controller.state.phase == "won":
+			controller = null
+			feedback_text = "巡回完成！三张球桌全部达标"
+		else:
+			controller = run_controller.table_controller
+			_set_feedback_from_state()
 		_refresh_preview()
 		queue_redraw()
 
 
 func keep() -> void:
-	var result := controller.keep()
+	if run_controller == null or controller == null:
+		return
+	var result := run_controller.keep()
 	if result.ok:
 		feedback_text = LocalizationZhCn.text("feedback.kept")
 		feedback_color = Color("8fd7cf")
@@ -133,10 +168,12 @@ func keep() -> void:
 
 
 func legal_actions() -> Array[String]:
-	return controller.allowed_actions()
+	return controller.allowed_actions() if controller != null else []
 
 
 func view_model() -> Dictionary:
+	if controller == null:
+		return {"run_phase": run_controller.state.phase if run_controller != null else "none"}
 	var state := controller.state
 	return {
 		"score": state.score, "target": state.target_score,
@@ -147,6 +184,10 @@ func view_model() -> Dictionary:
 
 
 func _handle_click(position: Vector2) -> void:
+	if run_controller != null and run_controller.state.phase == "reward":
+		for index in run_controller.state.reward_choices.size():
+			if Rect2(285 + index * 280, 230, 240, 260).has_point(position): choose_reward(index); return
+		return
 	if Rect2(1080, 500, 120, 42).has_point(position):
 		settle()
 	elif Rect2(1210, 500, 110, 42).has_point(position):
@@ -159,6 +200,23 @@ func _handle_click(position: Vector2) -> void:
 
 func _can_aim() -> bool:
 	return not playing and controller != null and controller.state.phase == "aiming"
+
+func _settlement_evidence() -> Dictionary:
+	var events: Array = controller.state.last_rule_events
+	var rail_hits := 0
+	var copies := 0
+	var dyes := 0
+	var wall_kinds: Array[String] = []
+	if controller.last_simulation != null:
+		for event: PhysicsEvent in controller.last_simulation.events:
+			if event.type == "rail_collision": rail_hits += 1
+			elif event.type == "copy":
+				copies += 1
+				if not wall_kinds.has("copy"): wall_kinds.append("copy")
+			elif event.type == "dye":
+				dyes += 1
+				if not wall_kinds.has("dye"): wall_kinds.append("dye")
+	return {"power_level": power_level, "rail_hits": rail_hits, "copy_count": copies, "dye_count": dyes, "dyed_participant_count": dyes, "wall_kinds": wall_kinds, "indirect_participant_count": maxi(0, controller.state.hand.size() - 1), "maximum_activation_depth": maxi(1, controller.state.hand.size())}
 
 
 func _refresh_preview() -> void:
@@ -211,13 +269,41 @@ func _draw() -> void:
 	draw_rect(TABLE_RECT.grow(12), Color("172638"), true)
 	draw_rect(TABLE_RECT, Color("0b493f"), true)
 	draw_rect(TABLE_RECT, Color("85a496"), false, 3.0)
-	_draw_preview()
-	_draw_walls()
-	_draw_balls()
-	_draw_side_panel()
+	if run_controller != null and run_controller.state.phase == "reward":
+		_draw_reward_screen()
+	elif run_controller != null and run_controller.state.phase == "won":
+		_draw_run_summary()
+	elif controller != null:
+		_draw_preview()
+		_draw_walls()
+		_draw_balls()
+		_draw_side_panel()
 	draw_string(ThemeDB.fallback_font, Vector2(55, 735), feedback_text, HORIZONTAL_ALIGNMENT_LEFT, 700, 18, feedback_color)
 	draw_string(ThemeDB.fallback_font, Vector2(700, 735), LocalizationZhCn.text("controls"), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("9db1c4"))
 
+
+func _draw_reward_screen() -> void:
+	draw_string(ThemeDB.fallback_font, Vector2(430, 150), "选择一枚桌边徽章", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, Color("f5cf72"))
+	for index in run_controller.state.reward_choices.size():
+		var badge := BadgeCatalog.get_badge(run_controller.state.reward_choices[index])
+		var rect := Rect2(285 + index * 280, 230, 240, 260)
+		draw_rect(rect, Color("13283a"), true)
+		draw_rect(rect, Color("8fd7cf"), false, 3)
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 55), "%d · %s" % [index + 1, badge.name], HORIZONTAL_ALIGNMENT_LEFT, 195, 22, Color("dceaf7"))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 100), "流派：%s" % _build_name(badge.build), HORIZONTAL_ALIGNMENT_LEFT, 195, 16, Color("8fd7cf"))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 145), "定位：%s" % _role_name(badge.role), HORIZONTAL_ALIGNMENT_LEFT, 195, 16, Color("9db1c4"))
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 220), "点击卡片或按 %d" % [index + 1], HORIZONTAL_ALIGNMENT_LEFT, 195, 14, Color("f5cf72"))
+
+func _draw_run_summary() -> void:
+	draw_string(ThemeDB.fallback_font, Vector2(430, 240), "巡回胜利", HORIZONTAL_ALIGNMENT_LEFT, -1, 46, Color("6ff0aa"))
+	draw_string(ThemeDB.fallback_font, Vector2(400, 310), "三张球桌全部达标 · 已装备 %d 枚徽章" % run_controller.state.badges.size(), HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("dceaf7"))
+	_draw_button(Rect2(500, 390, 260, 50), "相同种子重新开始 [R]", true)
+
+func _build_name(id: String) -> String:
+	return {"pure_combo":"纯净组合","rail_chain":"撞库连锁","wall_risk":"功能墙冒险"}.get(id,id)
+
+func _role_name(id: String) -> String:
+	return {"starter":"启动器","core":"核心件","amplifier":"放大器","finisher":"收尾件","growth":"成长件"}.get(id,id)
 
 func _draw_preview() -> void:
 	if not _can_aim() or not preview.get("ok", false):

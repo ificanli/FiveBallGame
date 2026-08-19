@@ -17,6 +17,11 @@ var shot_busted := false
 var processed_event_count := 0
 var combo: Dictionary = ComboEvaluator.evaluate([])
 var last_rule_events: Array[Dictionary] = []
+# M3 per-shot protection. Default values are omitted from M2 serialization/hashes.
+var hand_capacity := 5
+var active_bust_protection := ""
+var protection_triggered := false
+var forced_settle := false
 
 
 static func create_tutorial(table_seed: int = 20260818) -> CoreLoopSnapshot:
@@ -75,7 +80,7 @@ func validate() -> Dictionary:
 		return {"ok": false, "code": "missing_table"}
 	if not VALID_PHASES.has(phase):
 		return {"ok": false, "code": "invalid_phase"}
-	if hand.size() > 5:
+	if hand.size() > hand_capacity or hand_capacity < 5 or hand_capacity > 6:
 		return {"ok": false, "code": "hand_capacity_exceeded"}
 	if score < 0 or target_score <= 0 or strokes_remaining < 0:
 		return {"ok": false, "code": "invalid_counter"}
@@ -120,7 +125,7 @@ func to_dict() -> Dictionary:
 	ids.sort()
 	for id: Variant in ids:
 		states[str(id)] = collection_states[id]
-	return {
+	var output := {
 		"schema_version": SCHEMA_VERSION,
 		"rules_version": RULES_VERSION,
 		"combo_rules_version": ComboEvaluator.RULES_VERSION,
@@ -136,6 +141,9 @@ func to_dict() -> Dictionary:
 		"combo": combo.duplicate(true),
 		"last_rule_events": last_rule_events.duplicate(true),
 	}
+	if hand_capacity != 5 or not active_bust_protection.is_empty() or protection_triggered or forced_settle:
+		output["m3_protection"] = {"hand_capacity": hand_capacity, "active": active_bust_protection, "triggered": protection_triggered, "forced_settle": forced_settle}
+	return output
 
 
 static func from_dict(data: Dictionary) -> CoreLoopSnapshot:
@@ -153,5 +161,10 @@ static func from_dict(data: Dictionary) -> CoreLoopSnapshot:
 	state.shot_busted = bool(data.get("shot_busted", false))
 	state.processed_event_count = int(data.get("processed_event_count", 0))
 	state.last_rule_events.assign(data.get("last_rule_events", []))
+	var protection: Dictionary = data.get("m3_protection", {})
+	state.hand_capacity = int(protection.get("hand_capacity", 5))
+	state.active_bust_protection = str(protection.get("active", ""))
+	state.protection_triggered = bool(protection.get("triggered", false))
+	state.forced_settle = bool(protection.get("forced_settle", false))
 	state.refresh_combo()
 	return state

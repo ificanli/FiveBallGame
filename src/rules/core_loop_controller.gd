@@ -23,6 +23,8 @@ func shoot(shot: ShotInput, capture_trajectories: bool = false) -> Dictionary:
 	state.phase = "simulating"
 	state.shot_busted = false
 	state.last_rule_events.clear()
+	state.protection_triggered = false
+	state.forced_settle = false
 	_prepare_physics_eligibility()
 	last_simulation = PhysicsSimulator.new().simulate(state.table, shot, null, -1, capture_trajectories)
 	if last_simulation.status != "success":
@@ -41,6 +43,10 @@ func settle() -> Dictionary:
 	state.score += banked
 	_forget_hand_as_waste()
 	state.hand.clear()
+	state.hand_capacity = 5
+	state.active_bust_protection = ""
+	state.protection_triggered = false
+	state.forced_settle = false
 	state.refresh_combo()
 	if state.score >= state.target_score:
 		state.phase = "won"
@@ -53,7 +59,7 @@ func settle() -> Dictionary:
 
 
 func keep() -> Dictionary:
-	if state == null or state.phase != "post_shot_decision":
+	if state == null or state.phase != "post_shot_decision" or state.forced_settle:
 		return _reject("keep_not_allowed")
 	if state.strokes_remaining <= 0:
 		return _reject("no_strokes_remaining")
@@ -70,7 +76,7 @@ func allowed_actions() -> Array[String]:
 			return ["shoot", "reset"] if state.strokes_remaining > 0 else ["reset"]
 		"post_shot_decision":
 			var actions: Array[String] = ["settle", "reset"]
-			if state.strokes_remaining > 0:
+			if state.strokes_remaining > 0 and not state.forced_settle:
 				actions.insert(1, "keep")
 			return actions
 		"won", "lost":

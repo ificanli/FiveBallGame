@@ -5,10 +5,12 @@ func test_scene_has_seeded_rule_state_and_preview() -> void:
 	var table := (load("res://scenes/technical_table.tscn") as PackedScene).instantiate() as TechnicalTable
 	add_child(table)
 	await get_tree().process_frame
+	assert_str(table.run_controller.state.phase).is_equal("reward")
+	table.choose_reward(0)
 	assert_int(table.snapshot.balls.size()).is_equal(7)
 	assert_int(table.snapshot.walls.size()).is_equal(2)
-	assert_int(table.controller.state.target_score).is_equal(180)
-	assert_int(table.controller.state.strokes_remaining).is_equal(8)
+	assert_int(table.controller.state.target_score).is_equal(220)
+	assert_int(table.controller.state.strokes_remaining).is_equal(5)
 	assert_array(table.legal_actions()).contains_exactly(["shoot", "reset"])
 	assert_bool(table.preview.ok).is_true()
 	table.queue_free()
@@ -17,6 +19,7 @@ func test_controls_change_power_assist_shoot_and_reset() -> void:
 	var table := (load("res://scenes/technical_table.tscn") as PackedScene).instantiate() as TechnicalTable
 	add_child(table)
 	await get_tree().process_frame
+	table.choose_reward(0)
 	table.power_level = 5
 	table.assistance_index = 2
 	table.shoot()
@@ -24,13 +27,15 @@ func test_controls_change_power_assist_shoot_and_reset() -> void:
 	assert_int(table.playback_result.trajectories.size()).is_equal(7)
 	table.reset_same_seed()
 	assert_bool(table.playing).is_false()
-	assert_int(table.snapshot.seed).is_equal(20260818)
+	assert_str(table.run_controller.state.phase).is_equal("reward")
+	assert_int(table.run_controller.state.seed).is_equal(20260819)
 	table.queue_free()
 
 func test_view_model_cannot_mutate_rule_truth() -> void:
 	var table := (load("res://scenes/technical_table.tscn") as PackedScene).instantiate() as TechnicalTable
 	add_child(table)
 	await get_tree().process_frame
+	table.choose_reward(0)
 	var ball := table.snapshot.find_ball(2)
 	table.controller.state.collection_states[2] = "hand"
 	table.controller.state.hand.append(HandSlot.physical(ball))

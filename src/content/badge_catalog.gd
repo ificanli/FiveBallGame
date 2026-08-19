@@ -11,7 +11,7 @@ const BADGES := [
 	{"id":"pattern_upgrader","name":"牌型升级器","build":"pure_combo","role":"finisher","condition":"matching_three_plus","effect":"multiply_multiplier","value":150,"decision":true},
 	{"id":"color_straight_prize","name":"纯色顺大奖","build":"pure_combo","role":"growth","condition":"same_color_straight","effect":"grow_add_multiplier","value":1,"decision":true},
 	{"id":"rail_guest","name":"贴库客","build":"rail_chain","role":"starter","condition":"rail_hits","effect":"add_base_per","value":3,"cap":18,"decision":true},
-	{"id":"fifth_gear","name":"第五档","build":"rail_chain","role":"amplifier","condition":"power_five_three_slots","effect":"multiply_multiplier","value":200,"decision":true},
+	{"id":"fifth_gear","name":"第五档","build":"rail_chain","role":"amplifier","condition":"power_five_three_slots","effect":"multiply_multiplier","value":150,"decision":true},
 	{"id":"soft_touch_master","name":"轻推大师","build":"rail_chain","role":"core","condition":"power_one_two_slots","effect":"add_base","value":35,"decision":true},
 	{"id":"chain_reaction","name":"连锁反应","build":"rail_chain","role":"core","condition":"indirect_participants","effect":"add_multiplier_per","value":2,"decision":true},
 	{"id":"rebound_expert","name":"反弹专家","build":"rail_chain","role":"finisher","condition":"participant_after_rail","effect":"add_multiplier_per","value":2,"decision":true},

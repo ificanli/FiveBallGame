@@ -10,6 +10,10 @@ static func use(run: RunSnapshot, tool_id: String, parameters: Dictionary = {}) 
 		"soft_pocket","insurance_slot":
 			if table.phase!="aiming": return _reject("tool_phase")
 			run.active_protection=tool_id
+			table.active_bust_protection=tool_id
+			table.hand_capacity=6 if tool_id=="insurance_slot" else 5
+			table.protection_triggered=false
+			table.forced_settle=false
 		"color_chalk":
 			var ball:=_physical_hand_ball(table,int(parameters.get("ball_id",0)))
 			var color:=str(parameters.get("color_id",""))
