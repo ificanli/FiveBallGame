@@ -31,6 +31,7 @@ stderr = decode(completed.stderr)
 print(stdout, end="")
 print(stderr, end="", file=sys.stderr)
 if completed.returncode != 0:
+    print(f"::error::Godot exited {completed.returncode}; stdout_tail={stdout[-2000:]!r}; stderr_tail={stderr[-2000:]!r}")
     raise SystemExit(completed.returncode)
 
 payload = None
@@ -45,6 +46,7 @@ for line in reversed((stdout + "\n" + stderr).splitlines()):
         payload = candidate
         break
 if payload is None:
+    print(f"::error::No replay JSON; stdout_tail={stdout[-2000:]!r}; stderr_tail={stderr[-2000:]!r}")
     raise SystemExit("Godot replay command produced no JSON status payload")
 if payload.get("status") not in ("passed", "success"):
     raise SystemExit(f"Replay payload failed: {payload.get('status')}")
