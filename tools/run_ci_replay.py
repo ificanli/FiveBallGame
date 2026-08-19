@@ -17,6 +17,8 @@ command = [args.godot, "--headless", "--path", args.project, "--script", args.sc
 completed = subprocess.run(command, cwd=args.project, capture_output=True)
 
 def decode(data: bytes) -> str:
+    if data.startswith((b"\xff\xfe", b"\xfe\xff")) or data.count(b"\x00") > len(data) // 4:
+        return data.decode("utf-16", errors="replace")
     for encoding in ("utf-8", "gb18030", "cp1252"):
         try:
             return data.decode(encoding)
