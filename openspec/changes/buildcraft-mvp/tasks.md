@@ -62,10 +62,10 @@
 
 ## 9. Presentation, Chinese interaction, and statistics
 
-- [ ] 9.1 Build Chinese main entry, reward cards, run progress, ordered badge rail, tool inventory, final formula trace and table transitions from snapshots.
-- [ ] 9.2 Add restrained trigger feedback distinguishing `+基础分`, `+倍率`, `×倍率`, with skip/fast-forward and no rule-state ownership in animations.
-- [ ] 9.3 Implement local structured statistics and privacy-safe one-click JSON export for win/failure/abandon paths.
-- [ ] 9.4 Add UI adapter tests for Chinese labels, legal actions, reward persistence, replacement, six-slot forced settle and terminal summaries.
+- [x] 9.1 Build Chinese main entry, reward cards, run progress, ordered badge rail, tool inventory, final formula trace and table transitions from snapshots.
+- [x] 9.2 Add restrained trigger feedback distinguishing `+基础分`, `+倍率`, `×倍率`, with skip/fast-forward and no rule-state ownership in animations.
+- [x] 9.3 Implement local structured statistics and privacy-safe one-click JSON export for win/failure/abandon paths.
+- [x] 9.4 Add UI adapter tests for Chinese labels, legal actions, reward persistence, replacement, six-slot forced settle and terminal summaries.
 
 ## 10. Automated balance evidence
 
@@ -84,7 +84,7 @@
 
 ## 12. Human gate and delivery
 
-- [ ] 12.1 Obtain a real exported-build Run and record actual 15–25 minute timing, Chinese comprehension, reward understanding, tool use, route changes, result and blockers.
-- [ ] 12.2 Obtain a human score-hidden comparison of the three Build recordings; if they look the same or badges do not change routes, mark REVISE and stop content expansion.
-- [ ] 12.3 Fix blocking/spec issues with regression evidence; route material scope/identity changes through updated Gate P.
-- [ ] 12.4 Update status, milestone, backlog, balance report, human record and evidence boundary; stop for approval before sync/archive and merge.
+- [x] 12.1 Obtain a real exported-build Run and record actual 15–25 minute timing, Chinese comprehension, reward understanding, tool use, route changes, result and blockers.
+- [x] 12.2 Obtain a human score-hidden comparison of the three Build recordings; if they look the same or badges do not change routes, mark REVISE and stop content expansion.
+- [x] 12.3 Fix blocking/spec issues with regression evidence; route material scope/identity changes through updated Gate P.
+- [x] 12.4 Update status, milestone, backlog, balance report, human record and evidence boundary; stop for approval before sync/archive and merge.
