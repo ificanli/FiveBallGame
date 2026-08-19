@@ -17,5 +17,9 @@
 | M1-02 | Gate P review of M1 proposal/spec/design/tasks | DONE | User approved 2026-08-17 |
 | M1-03 | Implement deterministic physics table | DONE | 44/44 tasks; engineering + human gates passed |
 | M1-04 | Archive Change and integrate feature branch | DONE | Archived, synced, merged and pushed at `7642076` |
-| M2-01 | Propose single-player core loop Change | IN_REVIEW | `single-player-core-loop`; strict validation passed; Gate P required |
-| M2-02 | Implement single-player core loop | BLOCKED | Do not implement without explicit Gate P approval |
+| M2-01 | Propose single-player core loop Change | DONE | Gate P approved; strict validation passed |
+| M2-02 | Implement single-player core loop | DONE | 71/71 tests; deterministic replay/stress; clean exports; Gate I and human acceptance |
+| M2-03 | Sync specs, archive Change, and merge | IN_PROGRESS | Product owner approved continuation; complete after final status evidence |
+| M2-04 | Stabilize cloud Windows replay runtime | FOLLOW-UP | Run `32207178927`: Linux green; Windows 18×100 replay exceeds one hour despite local Windows pass |
+| M3-01 | Propose buildcraft MVP with Simplified Chinese UI | NEXT | Separate OpenSpec Change and Gate P required |
+| M3-02 | Implement buildcraft MVP | BLOCKED | No implementation before M3 Gate P |

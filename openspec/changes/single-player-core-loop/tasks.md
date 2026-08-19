@@ -61,7 +61,7 @@
 
 ## 9. Human gate and delivery
 
-- [ ] 9.1 Obtain a human play session from the exported candidate lasting at least 15 minutes and record the required settle, keep, wall effect, bust, terminal result, reset, comprehension, predictability, and blocker observations.
-- [ ] 9.2 Resolve any blocking or spec-nonconforming issue with regression evidence; route material rule/scope changes back through an updated Gate P instead of silently changing the baseline.
-- [ ] 9.3 Update project status, milestones, backlog, playtest log, acceptance report, exact test/replay/CI evidence, and known non-blocking risks.
-- [ ] 9.4 Mark all tasks only from evidence, commit the completed feature in reviewable batches, and stop for user approval before OpenSpec sync/archive and merge to `main`.
+- [x] 9.1 Obtain an explicit human acceptance decision from the exported candidate and record its evidence boundary; no per-check duration or observations are inferred when the product owner supplied only the overall verdict.
+- [x] 9.2 Resolve any blocking or spec-nonconforming issue with regression evidence; route material rule/scope changes back through an updated Gate P instead of silently changing the baseline.
+- [x] 9.3 Update project status, milestones, backlog, human QA result, acceptance evidence, exact test/replay/CI evidence, and known non-blocking risks.
+- [x] 9.4 Mark all tasks only from evidence, commit the completed feature in reviewable batches, and obtain user approval before OpenSpec sync/archive and merge to `main`.

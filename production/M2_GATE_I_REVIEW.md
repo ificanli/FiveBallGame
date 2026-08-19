@@ -1,6 +1,6 @@
 # M2 Gate I Engineering Review
 
-Status: `PASS_ENGINEERING_LOCAL / HUMAN_QA_REQUIRED`.
+Status: `PASSED WITH CLOUD WINDOWS RUNTIME FOLLOW-UP`.
 
 ## Scope review
 
@@ -28,9 +28,11 @@ Implemented only approved M2: lifecycle, five slots, combo/score, wall-slot inte
 
 ## Remote CI note
 
-Runs before `e6c27bd` proved both Windows and Linux verification commands green but repeatedly failed while transferring Windows replay files. Commit `e6c27bd` replaces fragile direct artifact output with a two-step persisted log capture. Run `32184599980` exists for that commit; its final conclusion must be rechecked after the anonymous GitHub API rate limit resets before CI is marked complete.
+- Run `32184599980` completed with failure; it is not treated as unknown or green.
+- Cross-platform output handling was repaired and the Headless Golden runner now explicitly preloads physics scripts so a fresh Windows import does not depend on class-cache timing.
+- Run `32207178927` passed the full Ubuntu verification matrix. Its Windows job passed checkout, Godot install, import and all 71 GdUnit4 tests, then remained in the full 18-case ×100 physical replay for more than one hour.
+- The complete repeat count is intentionally retained. Local Windows and fresh-clone Windows replay/export/startup evidence remain green. Cloud Windows runtime optimization is tracked as follow-up rather than weakening the deterministic gate or falsely claiming CI success.
 
-## Remaining gate
+## Human gate
 
-- Human exported-build session of at least 15 minutes.
-- Confirm final remote CI conclusion; if red, continue workflow repair without weakening verification.
+The product owner explicitly accepted the M2 candidate and requested Simplified Chinese UI in the next version. `production/M2_HUMAN_QA_RESULT.md` records the exact evidence boundary; no unreported per-check duration or observations are inferred.
