@@ -19,7 +19,7 @@
 | M1-04 | Archive Change and integrate feature branch | DONE | Archived, synced, merged and pushed at `7642076` |
 | M2-01 | Propose single-player core loop Change | DONE | Gate P approved; strict validation passed |
 | M2-02 | Implement single-player core loop | DONE | 71/71 tests; deterministic replay/stress; clean exports; Gate I and human acceptance |
-| M2-03 | Sync specs, archive Change, and merge | IN_PROGRESS | Product owner approved continuation; complete after final status evidence |
+| M2-03 | Sync specs, archive Change, and merge | DONE | Archived at `openspec/changes/archive/2026-08-19-single-player-core-loop`; merged to `main` at `04095d9` |
 | M2-04 | Stabilize cloud Windows replay runtime | FOLLOW-UP | Run `32207178927`: Linux green; Windows 18×100 replay exceeds one hour despite local Windows pass |
-| M3-01 | Propose buildcraft MVP with Simplified Chinese UI | NEXT | Separate OpenSpec Change and Gate P required |
-| M3-02 | Implement buildcraft MVP | BLOCKED | No implementation before M3 Gate P |
+| M3-01 | Propose buildcraft MVP with Simplified Chinese UI | IN_REVIEW | `buildcraft-mvp`; 4/4 artifacts and strict validation passed; Gate P required |
+| M3-02 | Implement buildcraft MVP | BLOCKED | No implementation before explicit M3 Gate P |

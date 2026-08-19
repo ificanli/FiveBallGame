@@ -1,9 +1,9 @@
 # 《五球满贯》Steam 项目状态
 
 更新时间：2026-08-19
-当前阶段：M2 收尾 / M3 规划
-主里程碑：M2 单机核心闭环
-里程碑状态：PASSED
+当前阶段：M3 Gate P 规划审核
+主里程碑：M3 构筑 MVP
+里程碑状态：PLANNING / NOT APPROVED FOR IMPLEMENTATION
 
 ## 已通过里程碑
 
@@ -28,12 +28,11 @@
 - CI 修复后 run `32207178927` 的 Linux 全验证已成功；Windows 在执行完整 18 案例 ×100 物理回放时超过一小时仍在运行。完整本地 Windows 回放和干净 clone Windows 证据已通过；云端 Windows 长耗时列为工程 follow-up，不宣称该 run 全绿，也不通过降低重复次数伪造绿灯。
 - 自动测试证明稳定性与确定性，不证明构筑玩法好玩。
 
-## M3 下一步
+## M3 当前状态
 
-创建独立 OpenSpec Change `buildcraft-mvp`，只提交 proposal/spec/design/tasks 并停在 Gate P。范围基线：
+独立 OpenSpec Change `buildcraft-mvp` 已完成 proposal/spec/design/tasks，OpenSpec 4/4 且 strict validation 通过；当前停在 Gate P，尚未实现任何 M3 规则。范围基线：
 
-- 18～24 枚徽章；
-- 三套肉眼可区分、会改变球路判断的打法；
+- 锁定 18 枚徽章，分为纯净组合、撞库连锁、功能墙冒险三套肉眼可区分且会改变球路判断的打法；
 - 6 种道具；
 - 3 张正式规则球桌；
 - 奖励三选一；
@@ -41,4 +40,4 @@
 - Run 结算与简单统计；
 - 默认玩家可见界面全部使用简体中文，内部 ID/回放字段继续保持稳定英文键。
 
-未获 M3 Gate P 明确批准前，不实现徽章、道具、奖励或 Run。
+规划位置：`openspec/changes/buildcraft-mvp/`。未获 M3 Gate P 明确批准前，不实现徽章、道具、奖励或 Run。
