@@ -36,29 +36,29 @@
 
 ## 6. Six consumable tools
 
-- [ ] 6.1 Implement inventory, target-selection, cancel and atomic command tests with three-card capacity and deterministic replay.
-- [ ] 6.2 Write and pass soft-pocket tests for physical/copy sixth slots, continued motion, single consumption and no post-bust rescue.
-- [ ] 6.3 Write and pass insurance-slot tests for temporary six-slot evaluation, forced settle, no keep and capacity restoration.
-- [ ] 6.4 Implement chalk, number sticker and return hook with physical-ID synchronization, legal target filtering and invalid-range rejection.
-- [ ] 6.5 Implement table reset preserving banked score/strokes/Build/table rules while clearing hand and deterministically rebuilding legal balls.
-- [ ] 6.6 Add Chinese tool interaction UI and tests proving presentation cannot consume inventory before a valid committed command.
+- [x] 6.1 Implement inventory, target-selection, cancel and atomic command tests with three-card capacity and deterministic replay.
+- [x] 6.2 Write and pass soft-pocket tests for physical/copy sixth slots, continued motion, single consumption and no post-bust rescue.
+- [x] 6.3 Write and pass insurance-slot tests for temporary six-slot evaluation, forced settle, no keep and capacity restoration.
+- [x] 6.4 Implement chalk, number sticker and return hook with physical-ID synchronization, legal target filtering and invalid-range rejection.
+- [x] 6.5 Implement table reset preserving banked score/strokes/Build/table rules while clearing hand and deterministically rebuilding legal balls.
+- [x] 6.6 Add Chinese tool interaction UI and tests proving presentation cannot consume inventory before a valid committed command.
 
 ## 7. Controlled replenishment and density safety
 
-- [ ] 7.1 Write failing tests for 6/8/10 uncollected targets, exact deficit spawning, no RNG consumption when full and settlement/bust triggers.
-- [ ] 7.2 Implement deterministic batch generation over versioned spawn points with wall/ball/cue-zone overlap validation and stable IDs.
-- [ ] 7.3 Add minimum-change controlled generation tests for basic opportunities without guaranteed premium hands.
-- [ ] 7.4 Add blocked-spawn recovery and ten-waste oldest-first safety cleanup; prove cleanup awards no score or badge triggers.
-- [ ] 7.5 Add dense-table stress across Seeds and all table layouts, asserting finite state, bounded attempts, no overlap and reproducible hashes.
+- [x] 7.1 Write failing tests for 6/8/10 uncollected targets, exact deficit spawning, no RNG consumption when full and settlement/bust triggers.
+- [x] 7.2 Implement deterministic batch generation over versioned spawn points with wall/ball/cue-zone overlap validation and stable IDs.
+- [x] 7.3 Add minimum-change controlled generation tests for basic opportunities without guaranteed premium hands.
+- [x] 7.4 Add blocked-spawn recovery and ten-waste oldest-first safety cleanup; prove cleanup awards no score or badge triggers.
+- [x] 7.5 Add dense-table stress across Seeds and all table layouts, asserting finite state, bounded attempts, no overlap and reproducible hashes.
 
 ## 8. Three-table Run and rewards
 
-- [ ] 8.1 Define versioned qualification/high-stakes/dealer configurations with fixed derived Seeds, layouts, walls, tuning values, replenishment targets and Chinese names.
-- [ ] 8.2 Implement Run phase machine: start reward → table 1 → reward → table 2 → reward → table 3 → win/loss summary.
-- [ ] 8.3 Implement deterministic constrained three-choice rewards, no reopen refresh, no duplicate candidates, starter-only opening pool and at least one synergy candidate later.
-- [ ] 8.4 Implement five-slot replacement/decline flow and prevent a nonexistent post-dealer reward or score carryover between tables.
-- [ ] 8.5 Add multi-table Headless cases for three representative builds, losses on each table, same-Seed restart, new-Seed run, reward reopen and terminal input lock.
-- [ ] 8.6 Repeat every Run case 100 times and compare command/events/rewards/replenishment/scores/growth/terminal hash without weakening M1/M2 suites.
+- [x] 8.1 Define versioned qualification/high-stakes/dealer configurations with fixed derived Seeds, layouts, walls, tuning values, replenishment targets and Chinese names.
+- [x] 8.2 Implement Run phase machine: start reward → table 1 → reward → table 2 → reward → table 3 → win/loss summary.
+- [x] 8.3 Implement deterministic constrained three-choice rewards, no reopen refresh, no duplicate candidates, starter-only opening pool and at least one synergy candidate later.
+- [x] 8.4 Implement five-slot replacement/decline flow and prevent a nonexistent post-dealer reward or score carryover between tables.
+- [x] 8.5 Add multi-table Headless cases for three representative builds, losses on each table, same-Seed restart, new-Seed run, reward reopen and terminal input lock.
+- [x] 8.6 Repeat every Run case 100 times and compare command/events/rewards/replenishment/scores/growth/terminal hash without weakening M1/M2 suites.
 
 ## 9. Presentation, Chinese interaction, and statistics
 
@@ -69,14 +69,14 @@
 
 ## 10. Automated balance evidence
 
-- [ ] 10.1 Implement seeded legal-random, heuristic and Build-aware agents against the same production rules; version and document each policy.
-- [ ] 10.2 Run paired no-badge/pure-combo/rail-chain/wall-risk simulations over shared Seeds; report confidence intervals, percentiles, table death walls, trigger rates and decision logs.
-- [ ] 10.3 Add gates for never-triggered content, invalid reward choices, non-finite/explosive scores, dominant options and visually homogeneous proxy routes.
-- [ ] 10.4 Perform targeted counterfactual ablations for core badges and tools; explicitly state that automation does not prove fun.
+- [x] 10.1 Implement seeded legal-random, heuristic and Build-aware agents against the same production rules; version and document each policy.
+- [x] 10.2 Run paired no-badge/pure-combo/rail-chain/wall-risk simulations over shared Seeds; report confidence intervals, percentiles, table death walls, trigger rates and decision logs.
+- [x] 10.3 Add gates for never-triggered content, invalid reward choices, non-finite/explosive scores, dominant options and visually homogeneous proxy routes.
+- [x] 10.4 Perform targeted counterfactual ablations for core badges and tools; explicitly state that automation does not prove fun.
 
 ## 11. Regression, CI, export, and independent review
 
-- [ ] 11.1 Run full GdUnit4, M1 Golden, M2 sessions, M3 Run replays, configuration/localization audits and stress tests; never rewrite approved expected results to hide regressions.
+- [x] 11.1 Run full GdUnit4, M1 Golden, M2 sessions, M3 Run replays, configuration/localization audits and stress tests; never rewrite approved expected results to hide regressions.
 - [ ] 11.2 Resolve or formally isolate the GitHub Windows full-replay runtime problem while retaining local Windows and cloud Linux complete repeat evidence; do not lower approved repeat counts silently.
 - [ ] 11.3 Export clean-clone Windows/Linux candidates, smoke both where supported, verify Chinese font assets/licenses and collect logs without blocking errors.
 - [ ] 11.4 Conduct independent Gate I scope, architecture, content quality, secrets, rollback and evidence review.
