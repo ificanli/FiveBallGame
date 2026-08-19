@@ -57,6 +57,8 @@
 - **WHEN** 废球实际撞击染色墙
 - **THEN** 废球 SHALL 正常反弹且其颜色及所有槽位 SHALL 不变
 
+## ADDED Requirements
+
 ### Requirement: Wall effects integrate with the single-player hand
 复制与染色事件 SHALL 在发生的模拟 tick 内通过同一规则状态机原子更新球槽、球状态、墙体充能及爆仓结果，同时保留可测试的事件记录。M2 SHALL NOT 因该集成引入徽章、奖励、长局 Run 或 PvP 规则。
 
@@ -67,3 +69,9 @@
 #### Scenario: Headless replay consumes wall events
 - **WHEN** 相同规则版本、初态和输入在 Headless 环境重放
 - **THEN** 墙体事件、球槽更新、爆仓结果与最终状态 Hash SHALL 可复现
+
+## REMOVED Requirements
+
+### Requirement: Wall effects remain a technical slice
+**Reason**: M2 正式把复制与染色结果接入球槽、组合和爆仓规则，不再只是无产品规则的技术展示。
+**Migration**: 由新增的 `Wall effects integrate with the single-player hand` 需求和三份已修改墙体需求承接。
