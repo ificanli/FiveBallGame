@@ -3,6 +3,8 @@ extends SceneTree
 const CASE_DIR := "res://tests/golden_replay/cases"
 const MANIFEST_PATH := "res://tests/golden_replay/manifest.json"
 const OUTPUT_DIR := "res://tests/golden_replay/output"
+const ReplayRunnerScript := preload("res://src/physics/replay_runner.gd")
+const CanonicalStateScript := preload("res://src/physics/canonical_state.gd")
 
 
 func _init() -> void:
@@ -19,7 +21,7 @@ func _init() -> void:
 		_finish({"status": "failed", "reason": "coverage", "detail": audit}, 1, output_path)
 		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT_DIR))
-	var runner := ReplayRunner.new()
+	var runner := ReplayRunnerScript.new()
 	var case_results: Array[Dictionary] = []
 	var failures: Array[Dictionary] = []
 	for case_entry: Dictionary in manifest.data.cases:
@@ -55,10 +57,10 @@ func _init() -> void:
 	_finish(output, 0 if failures.is_empty() else 1, output_path)
 
 
-func _repeat_case(runner: ReplayRunner, case_data: Dictionary, baseline: Dictionary, repeat_count: int) -> Dictionary:
+func _repeat_case(runner: RefCounted, case_data: Dictionary, baseline: Dictionary, repeat_count: int) -> Dictionary:
 	for repeat_index in range(1, repeat_count):
-		var repeated := runner.execute_case(case_data)
-		var difference := CanonicalState.first_difference(runner.comparable_output(baseline), runner.comparable_output(repeated))
+		var repeated: Dictionary = runner.execute_case(case_data)
+		var difference: Dictionary = CanonicalStateScript.first_difference(runner.comparable_output(baseline), runner.comparable_output(repeated))
 		if not difference.equal:
 			return {
 				"case_id": baseline.case_id,
