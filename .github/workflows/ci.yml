@@ -29,6 +29,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Install Godot 4.7.1 on Linux
         if: runner.os == 'Linux'
         run: |
