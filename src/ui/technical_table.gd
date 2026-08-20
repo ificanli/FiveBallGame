@@ -402,8 +402,13 @@ func _on_tool_selected(tool_id: String) -> void:
 		_pending_tool_id = tool_id
 		_pending_tool_ball_id = -1
 		_close_modal()
-		feedback_text = "请点击桌面上的一颗本手球（Esc 取消）"
-		feedback_color = Color("f5cf72")
+		if not _has_physical_hand_ball():
+			_pending_tool_id = ""
+			feedback_text = LocalizationZhCn.text("feedback.tool.no_physical_target")
+			feedback_color = Color("ff7a7a")
+		else:
+			feedback_text = "请点击桌面上金色描边的本手球（Esc 取消）"
+			feedback_color = Color("f5cf72")
 		queue_redraw()
 
 
@@ -411,7 +416,7 @@ func _apply_tool(tool_id: String, parameters: Dictionary) -> void:
 	var result := run_controller.use_tool(tool_id, parameters)
 	if result.ok:
 		controller = run_controller.table_controller
-		feedback_text = "道具已使用"
+		feedback_text = _tool_feedback(tool_id, parameters)
 		feedback_color = Color("8fd7cf")
 		_apply_snapshot_positions()
 		_refresh_preview()
@@ -421,6 +426,26 @@ func _apply_tool(tool_id: String, parameters: Dictionary) -> void:
 		feedback_text = LocalizationZhCn.format("feedback.rejected", [result.code])
 		feedback_color = Color("ff7a7a")
 		queue_redraw()
+
+
+func _tool_feedback(tool_id: String, parameters: Dictionary) -> String:
+	match tool_id:
+		"soft_pocket": return LocalizationZhCn.text("feedback.tool.soft_pocket")
+		"insurance_slot": return LocalizationZhCn.text("feedback.tool.insurance_slot")
+		"color_chalk": return LocalizationZhCn.format("feedback.tool.color_chalk", [_color_name(str(parameters.get("color_id", "")))])
+		"number_sticker": return LocalizationZhCn.text("feedback.tool.number_sticker")
+		"return_hook": return LocalizationZhCn.text("feedback.tool.return_hook")
+		"table_reset": return LocalizationZhCn.text("feedback.tool.table_reset")
+	return "道具已使用"
+
+
+func _has_physical_hand_ball() -> bool:
+	if controller == null:
+		return false
+	for slot: HandSlot in controller.state.hand:
+		if slot.has_physical_ball:
+			return true
+	return false
 
 
 func _cancel_tool_target() -> void:

@@ -80,7 +80,12 @@ func refresh(inventory: Dictionary, legal_tool_ids: Array[String]) -> void:
 		var use_button: Button = _find_use_button(row)
 		if use_button != null:
 			use_button.disabled = not legal
-			use_button.text = "使用×%d" % count if legal else "不可用"
+			if legal:
+				use_button.text = "使用×%d" % count
+			else:
+				var tool: Dictionary = ToolCatalog.get_tool(tool_id)
+				var when: String = LocalizationZhCn.text("tool.when.aiming") if str(tool.get("phase", "")) == "aiming" else LocalizationZhCn.text("tool.when.post")
+				use_button.text = "%s可用" % when
 
 
 func _find_use_button(row: PanelContainer) -> Button:
