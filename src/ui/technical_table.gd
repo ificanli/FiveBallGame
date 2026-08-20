@@ -25,6 +25,21 @@ var display_positions: Dictionary = {}
 var feedback_text := LocalizationZhCn.text("feedback.ready")
 var feedback_color := Color("8fd7cf")
 
+# M3.5 UI panels
+var hud: HudPanel
+var reward_panel: RewardPanel
+var tool_selector: ToolSelector
+var badge_panel: BadgePanel
+var run_summary: RunSummaryPanel
+var pause_menu: PauseMenu
+var tutorial: TutorialOverlay
+var _modal_overlay: ColorRect
+var _modal_center: CenterContainer
+var _active_modal: Control = null
+var _pending_reward_badge := ""
+var _pending_tool_id := ""
+var _pending_tool_ball_id := -1
+
 var snapshot: TableSnapshot:
 	get: return controller.state.table if controller != null else null
 
@@ -33,8 +48,57 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	focus_mode = Control.FOCUS_ALL
 	grab_focus()
+	_build_ui()
 	start_run_same_seed()
 	print("M3_RUN_READY seed=%d rules=%s" % [seed, RunSnapshot.RULES_VERSION])
+
+
+func _build_ui() -> void:
+	hud = HudPanel.new()
+	hud.position = Vector2(1055, 70)
+	hud.visible = false
+	add_child(hud)
+	hud.settle_requested.connect(settle)
+	hud.keep_requested.connect(keep)
+	hud.reset_requested.connect(reset_same_seed)
+	hud.tool_requested.connect(_open_tool_selector)
+	hud.pause_requested.connect(_open_pause)
+	hud.badge_requested.connect(func() -> void: _open_badge_panel("manage"))
+
+	_modal_overlay = UiTheme.make_modal_overlay()
+	_modal_overlay.visible = false
+	add_child(_modal_overlay)
+	_modal_center = CenterContainer.new()
+	_modal_center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_modal_overlay.add_child(_modal_center)
+
+	reward_panel = RewardPanel.new()
+	reward_panel.reward_chosen.connect(_on_reward_chosen)
+	tool_selector = ToolSelector.new()
+	tool_selector.tool_selected.connect(_on_tool_selected)
+	tool_selector.tool_cancelled.connect(_close_modal)
+	badge_panel = BadgePanel.new()
+	badge_panel.reorder_requested.connect(_on_badge_reorder)
+	badge_panel.replace_requested.connect(_on_badge_replace)
+	badge_panel.closed.connect(_close_modal)
+	run_summary = RunSummaryPanel.new()
+	run_summary.restart_requested.connect(reset_same_seed)
+	run_summary.main_menu_requested.connect(_back_to_menu)
+	pause_menu = PauseMenu.new()
+	pause_menu.resume_requested.connect(_close_modal)
+	pause_menu.restart_requested.connect(reset_same_seed)
+	pause_menu.main_menu_requested.connect(_back_to_menu)
+	pause_menu.badge_requested.connect(func() -> void: _open_badge_panel("manage"))
+
+	for panel: Control in [reward_panel, tool_selector, badge_panel, run_summary, pause_menu]:
+		panel.visible = false
+		_modal_center.add_child(panel)
+
+	tutorial = TutorialOverlay.new()
+	tutorial.dismissed.connect(func() -> void: tutorial.visible = false)
+	tutorial.visible = false
+	add_child(tutorial)
+	tutorial.position = Vector2((size.x - 620) / 2.0, size.y - 190)
 
 
 func _process(delta: float) -> void:
@@ -47,11 +111,64 @@ func _process(delta: float) -> void:
 			_apply_snapshot_positions()
 			_set_feedback_from_state()
 			_refresh_preview()
+			_sync_ui()
 		queue_redraw()
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and _can_aim():
+	if event is InputEventKey and event.pressed and not event.echo:
+		match event.keycode:
+			KEY_ESCAPE:
+				if _active_modal != null:
+					_close_modal()
+				elif _pending_tool_id != "":
+					_cancel_tool_target()
+				elif hud.visible:
+					_open_pause()
+			KEY_1, KEY_2, KEY_3:
+				if run_controller != null and run_controller.state.phase == "reward" and _active_modal == null:
+					_on_reward_chosen(int(event.keycode - KEY_1))
+				elif _can_aim() and _active_modal == null:
+					power_level = int(event.keycode - KEY_0)
+					_refresh_preview()
+					_sync_ui()
+			KEY_4, KEY_5:
+				if _can_aim() and _active_modal == null:
+					power_level = int(event.keycode - KEY_0)
+					_refresh_preview()
+					_sync_ui()
+			KEY_SPACE, KEY_ENTER:
+				if _active_modal == null:
+					shoot()
+			KEY_S:
+				if _active_modal == null:
+					settle()
+			KEY_K:
+				if _active_modal == null:
+					keep()
+			KEY_R:
+				if _active_modal == null:
+					reset_same_seed()
+			KEY_Q:
+				if _active_modal == null and _pending_tool_id == "":
+					_open_tool_selector()
+			KEY_B:
+				if _active_modal == null and hud.visible:
+					_open_badge_panel("manage")
+			KEY_TAB:
+				if _can_aim() and _active_modal == null:
+					assistance_index = (assistance_index + 1) % MODES.size()
+					_refresh_preview()
+					_sync_ui()
+			KEY_LEFT:
+				if _can_aim() and _active_modal == null:
+					aim_direction = aim_direction.rotated(deg_to_rad(-0.5))
+					_refresh_preview()
+			KEY_RIGHT:
+				if _can_aim() and _active_modal == null:
+					aim_direction = aim_direction.rotated(deg_to_rad(0.5))
+					_refresh_preview()
+	elif event is InputEventMouseMotion and _can_aim() and _active_modal == null:
 		var cue := snapshot.find_ball(1)
 		var direction: Vector2 = (event as InputEventMouseMotion).position - TABLE_RECT.position - cue.position
 		if direction.length_squared() > 4.0:
@@ -59,40 +176,6 @@ func _gui_input(event: InputEvent) -> void:
 			_refresh_preview()
 	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		_handle_click((event as InputEventMouseButton).position)
-	elif event is InputEventKey and event.pressed and not event.echo:
-		match event.keycode:
-			KEY_1, KEY_2, KEY_3:
-				if run_controller != null and run_controller.state.phase == "reward":
-					choose_reward(int(event.keycode - KEY_1))
-				elif _can_aim():
-					power_level = int(event.keycode - KEY_0)
-					_refresh_preview()
-			KEY_4, KEY_5:
-				if _can_aim():
-					power_level = int(event.keycode - KEY_0)
-					_refresh_preview()
-			KEY_SPACE, KEY_ENTER:
-				shoot()
-			KEY_S:
-				settle()
-			KEY_K:
-				keep()
-			KEY_R:
-				reset_same_seed()
-			KEY_Q:
-				use_first_available_tool()
-			KEY_TAB:
-				if _can_aim():
-					assistance_index = (assistance_index + 1) % MODES.size()
-					_refresh_preview()
-			KEY_LEFT:
-				if _can_aim():
-					aim_direction = aim_direction.rotated(deg_to_rad(-0.5))
-					_refresh_preview()
-			KEY_RIGHT:
-				if _can_aim():
-					aim_direction = aim_direction.rotated(deg_to_rad(0.5))
-					_refresh_preview()
 
 
 func start_run_same_seed() -> void:
@@ -105,26 +188,69 @@ func start_run_same_seed() -> void:
 	feedback_color = Color("8fd7cf")
 	display_positions.clear()
 	preview = {}
+	_pending_tool_id = ""
+	_pending_tool_ball_id = -1
+	_close_modal()
+	_sync_ui()
 	queue_redraw()
+
 
 func reset_same_seed() -> void:
 	start_run_same_seed()
 
+
 func choose_reward(index: int) -> void:
+	_on_reward_chosen(index)
+
+
+func _on_reward_chosen(index: int) -> void:
 	if run_controller == null or run_controller.state.phase != "reward" or index < 0 or index >= run_controller.state.reward_choices.size():
 		return
 	var badge_id: String = run_controller.state.reward_choices[index]
+	if run_controller.state.badges.size() >= BadgeCatalog.MAX_EQUIPPED:
+		_pending_reward_badge = badge_id
+		_open_badge_panel("replace", badge_id)
+		return
+	_apply_reward(badge_id)
+
+
+func _apply_reward(badge_id: String) -> void:
 	var result := run_controller.choose_reward(badge_id)
 	if result.ok:
 		controller = run_controller.table_controller
 		feedback_text = "已装备「%s」，进入%s" % [BadgeCatalog.get_badge(badge_id).name, RunContent.table_config(run_controller.state.table_index).name]
+		_close_modal()
 		_apply_snapshot_positions()
 		_refresh_preview()
+		_sync_ui()
 		queue_redraw()
 
 
+func _on_badge_replace(index: int) -> void:
+	if run_controller == null or _pending_reward_badge == "":
+		return
+	var result := run_controller.choose_reward(_pending_reward_badge, index)
+	if result.ok:
+		controller = run_controller.table_controller
+		feedback_text = "已替换为「%s」" % BadgeCatalog.get_badge(_pending_reward_badge).name
+		_pending_reward_badge = ""
+		_close_modal()
+		_apply_snapshot_positions()
+		_refresh_preview()
+		_sync_ui()
+		queue_redraw()
+
+
+func _on_badge_reorder(index: int, delta: int) -> void:
+	if run_controller == null:
+		return
+	var target := index + delta
+	run_controller.reorder_badges(index, target)
+	_sync_ui()
+
+
 func shoot() -> void:
-	if not _can_aim():
+	if not _can_aim() or _active_modal != null:
 		return
 	var result := controller.shoot(ShotInput.create(1, aim_direction, power_level), true)
 	if not result.ok:
@@ -136,10 +262,11 @@ func shoot() -> void:
 	playback_elapsed = 0.0
 	feedback_text = LocalizationZhCn.text("feedback.shot")
 	feedback_color = Color("f5cf72")
+	_sync_ui()
 
 
 func settle() -> void:
-	if run_controller == null or controller == null:
+	if run_controller == null or controller == null or _active_modal != null:
 		return
 	var result := run_controller.settle(_settlement_evidence())
 	if result.ok:
@@ -155,72 +282,271 @@ func settle() -> void:
 			controller = run_controller.table_controller
 			_set_feedback_from_state()
 		_refresh_preview()
+		_sync_ui()
 		queue_redraw()
 
 
 func keep() -> void:
-	if run_controller == null or controller == null:
+	if run_controller == null or controller == null or _active_modal != null:
 		return
 	var result := run_controller.keep()
 	if result.ok:
 		feedback_text = LocalizationZhCn.text("feedback.kept")
 		feedback_color = Color("8fd7cf")
 		_refresh_preview()
+		_sync_ui()
 		queue_redraw()
 
 
 func use_first_available_tool() -> void:
-	if run_controller == null or controller == null:
-		return
-	var table := controller.state
-	var result := {}
-	if int(run_controller.state.tools.get("soft_pocket",0)) > 0 and table.phase == "aiming":
-		result = run_controller.use_tool("soft_pocket")
-	elif int(run_controller.state.tools.get("color_chalk",0)) > 0 and table.phase == "post_shot_decision":
-		for slot: HandSlot in table.hand:
-			if slot.has_physical_ball:
-				result = run_controller.use_tool("color_chalk", {"ball_id":slot.physical_ball_id,"color_id":"red"})
-				break
-	elif int(run_controller.state.tools.get("table_reset",0)) > 0 and table.phase == "post_shot_decision":
-		result = run_controller.use_tool("table_reset")
-		controller = run_controller.table_controller
-	if result.get("ok",false):
-		feedback_text = "道具已使用"
-		_apply_snapshot_positions(); _refresh_preview(); queue_redraw()
+	_open_tool_selector()
+
 
 func legal_actions() -> Array[String]:
 	return controller.allowed_actions() if controller != null else []
 
 
 func view_model() -> Dictionary:
+	var tools: Dictionary = run_controller.state.tools if run_controller != null else {}
+	var badges: Array[String] = run_controller.state.badges if run_controller != null else []
+	var assist_name := ""
+	if assistance_index >= 0 and assistance_index < MODE_KEYS.size():
+		assist_name = LocalizationZhCn.text(MODE_KEYS[assistance_index])
 	if controller == null:
-		return {"run_phase": run_controller.state.phase if run_controller != null else "none"}
+		return {"run_phase": run_controller.state.phase if run_controller != null else "none", "tools": tools, "badges": badges, "power": power_level, "assist": assist_name}
 	var state := controller.state
 	return {
 		"score": state.score, "target": state.target_score,
 		"strokes": state.strokes_remaining, "phase": state.phase,
 		"hand": state.hand.map(func(slot: HandSlot) -> Dictionary: return slot.to_dict()),
 		"combo": state.combo.duplicate(true), "actions": legal_actions(),
+		"tools": tools, "badges": badges, "power": power_level, "assist": assist_name,
 	}
 
 
-func _handle_click(position: Vector2) -> void:
-	if run_controller != null and run_controller.state.phase == "reward":
-		for index in run_controller.state.reward_choices.size():
-			if Rect2(285 + index * 280, 230, 240, 260).has_point(position): choose_reward(index); return
-		return
-	if Rect2(1080, 500, 120, 42).has_point(position):
-		settle()
-	elif Rect2(1210, 500, 110, 42).has_point(position):
-		keep()
-	elif Rect2(1080, 555, 240, 38).has_point(position):
-		reset_same_seed()
+func _sync_ui() -> void:
+	var phase := run_controller.state.phase if run_controller != null else "none"
+	var playing_phase: bool = run_controller != null and run_controller.state.phase == "playing"
+	hud.visible = playing_phase
+	if hud.visible:
+		hud.refresh(view_model())
+
+	# Phase-driven modals
+	if _active_modal == null:
+		if run_controller != null and run_controller.state.phase == "reward":
+			reward_panel.refresh(run_controller.state.reward_choices)
+			_show_modal(reward_panel)
+		elif run_controller != null and run_controller.state.phase in ["won", "lost"]:
+			run_summary.refresh(run_controller.state)
+			_show_modal(run_summary)
+
+	# Tutorial
+	if GameSession.tutorial_mode and playing_phase and _active_modal == null:
+		var state := controller.state
+		tutorial.refresh(state.phase, state.strokes_remaining, state.hand.size(), false)
+		tutorial.visible = true
 	else:
-		shoot()
+		tutorial.visible = false
+
+
+func _open_tool_selector() -> void:
+	if run_controller == null or controller == null:
+		return
+	var legal: Array[String] = []
+	for tool_id: String in run_controller.state.tools:
+		var tool := ToolCatalog.get_tool(tool_id)
+		var phase_ok: bool = (str(tool.get("phase", "")) == "aiming" and controller.state.phase == "aiming") or (str(tool.get("phase", "")) == "post_shot_decision" and controller.state.phase == "post_shot_decision") or (str(tool.get("phase", "")) == "stopped" and controller.state.phase in ["post_shot_decision"])
+		if phase_ok:
+			legal.append(tool_id)
+	tool_selector.refresh(run_controller.state.tools, legal)
+	_show_modal(tool_selector)
+
+
+func _on_tool_selected(tool_id: String) -> void:
+	var tool := ToolCatalog.get_tool(tool_id)
+	if tool.is_empty():
+		return
+	var target: String = str(tool.get("target", "none"))
+	if target == "none":
+		_close_modal()
+		_apply_tool(tool_id, {})
+	else:
+		_pending_tool_id = tool_id
+		_pending_tool_ball_id = -1
+		_close_modal()
+		feedback_text = "请点击桌面上的一颗本手球（Esc 取消）"
+		feedback_color = Color("f5cf72")
+		queue_redraw()
+
+
+func _apply_tool(tool_id: String, parameters: Dictionary) -> void:
+	var result := run_controller.use_tool(tool_id, parameters)
+	if result.ok:
+		controller = run_controller.table_controller
+		feedback_text = "道具已使用"
+		feedback_color = Color("8fd7cf")
+		_apply_snapshot_positions()
+		_refresh_preview()
+		_sync_ui()
+		queue_redraw()
+	else:
+		feedback_text = LocalizationZhCn.format("feedback.rejected", [result.code])
+		feedback_color = Color("ff7a7a")
+		queue_redraw()
+
+
+func _cancel_tool_target() -> void:
+	_pending_tool_id = ""
+	_pending_tool_ball_id = -1
+	feedback_text = LocalizationZhCn.text("feedback.ready")
+	feedback_color = Color("8fd7cf")
+	queue_redraw()
+
+
+func _handle_click(position: Vector2) -> void:
+	if _active_modal != null:
+		return
+	if _pending_tool_id != "":
+		_handle_tool_target_click(position)
+		return
+	if run_controller != null and run_controller.state.phase == "reward":
+		return
+	if not _can_aim():
+		return
+	shoot()
+
+
+func _handle_tool_target_click(position: Vector2) -> void:
+	if snapshot == null:
+		return
+	var table_pos: Vector2 = position - TABLE_RECT.position
+	for ball: BallState in snapshot.balls:
+		if ball.kind != "number":
+			continue
+		if table_pos.distance_to(ball.position) > ball.radius + 14.0:
+			continue
+		var slot: HandSlot = controller.state.find_physical_slot(ball.id)
+		if slot == null:
+			continue
+		_pending_tool_ball_id = ball.id
+		_finish_tool_target()
+		return
+
+
+func _finish_tool_target() -> void:
+	var tool_id := _pending_tool_id
+	var ball_id := _pending_tool_ball_id
+	if tool_id == "color_chalk":
+		_show_color_picker(ball_id)
+	elif tool_id == "number_sticker":
+		_show_delta_picker(ball_id)
+	else:
+		_pending_tool_id = ""
+		_pending_tool_ball_id = -1
+		_apply_tool(tool_id, {"ball_id": ball_id})
+
+
+func _show_color_picker(ball_id: int) -> void:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", UiTheme.panel_style())
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	panel.add_child(margin)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 10)
+	margin.add_child(column)
+	column.add_child(UiTheme.make_label("选择目标颜色", 18, UiTheme.ACCENT))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	column.add_child(row)
+	for color_id in ["red", "blue", "yellow", "green"]:
+		var button := UiTheme.make_button(_color_name(color_id), 15)
+		button.add_theme_color_override("font_color", COLOR_MAP[color_id])
+		button.pressed.connect(_on_color_chosen.bind(ball_id, color_id))
+		row.add_child(button)
+	_show_modal(panel)
+
+
+func _show_delta_picker(ball_id: int) -> void:
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", UiTheme.panel_style())
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	panel.add_child(margin)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 10)
+	margin.add_child(column)
+	column.add_child(UiTheme.make_label("调整数字", 18, UiTheme.ACCENT))
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	column.add_child(row)
+	for delta in [-1, 1]:
+		var button := UiTheme.make_button("+1" if delta == 1 else "-1", 16)
+		button.pressed.connect(_on_delta_chosen.bind(ball_id, delta))
+		row.add_child(button)
+	_show_modal(panel)
+
+
+func _on_color_chosen(ball_id: int, color_id: String) -> void:
+	_pending_tool_id = ""
+	_pending_tool_ball_id = -1
+	_close_modal()
+	_apply_tool("color_chalk", {"ball_id": ball_id, "color_id": color_id})
+
+
+func _on_delta_chosen(ball_id: int, delta: int) -> void:
+	_pending_tool_id = ""
+	_pending_tool_ball_id = -1
+	_close_modal()
+	_apply_tool("number_sticker", {"ball_id": ball_id, "delta": delta})
+
+
+func _open_badge_panel(mode: String, candidate_id: String = "") -> void:
+	if run_controller == null:
+		return
+	badge_panel.refresh(run_controller.state.badges, mode, candidate_id)
+	_show_modal(badge_panel)
+
+
+func _open_pause() -> void:
+	_show_modal(pause_menu)
+
+
+func _show_modal(panel: Control) -> void:
+	_active_modal = panel
+	if panel.get_parent() != _modal_center:
+		_modal_center.add_child(panel)
+	for p: Control in [reward_panel, tool_selector, badge_panel, run_summary, pause_menu]:
+		p.visible = p == panel
+	_modal_overlay.visible = true
+	_sync_ui()
+
+
+func _close_modal() -> void:
+	_active_modal = null
+	for p: Control in [reward_panel, tool_selector, badge_panel, run_summary, pause_menu]:
+		p.visible = false
+	for child: Node in _modal_center.get_children():
+		if child not in [reward_panel, tool_selector, badge_panel, run_summary, pause_menu]:
+			child.queue_free()
+	_modal_overlay.visible = false
+	_sync_ui()
+
+
+func _back_to_menu() -> void:
+	GameSession.tutorial_mode = false
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 
 
 func _can_aim() -> bool:
 	return not playing and controller != null and controller.state.phase == "aiming"
+
 
 func _settlement_evidence() -> Dictionary:
 	var events: Array = controller.state.last_rule_events
@@ -283,48 +609,22 @@ func _set_feedback_from_state() -> void:
 		feedback_text = LocalizationZhCn.text("feedback.empty")
 
 
+func _color_name(color_id: String) -> String:
+	return {"red": "红", "blue": "蓝", "yellow": "黄", "green": "绿"}.get(color_id, color_id)
+
+
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), Color("07111d"))
 	draw_string(ThemeDB.fallback_font, Vector2(55, 38), "%s · %s" % [LocalizationZhCn.text("game.title"), LocalizationZhCn.text("screen.tutorial")], HORIZONTAL_ALIGNMENT_LEFT, -1, 22, Color("dceaf7"))
-	draw_string(ThemeDB.fallback_font, Vector2(1040, 38), "M3 · 中文版", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("8fd7cf"))
 	draw_rect(TABLE_RECT.grow(12), Color("172638"), true)
 	draw_rect(TABLE_RECT, Color("0b493f"), true)
 	draw_rect(TABLE_RECT, Color("85a496"), false, 3.0)
-	if run_controller != null and run_controller.state.phase == "reward":
-		_draw_reward_screen()
-	elif run_controller != null and run_controller.state.phase == "won":
-		_draw_run_summary()
-	elif controller != null:
+	if controller != null:
 		_draw_preview()
 		_draw_walls()
 		_draw_balls()
-		_draw_side_panel()
 	draw_string(ThemeDB.fallback_font, Vector2(55, 735), feedback_text, HORIZONTAL_ALIGNMENT_LEFT, 700, 18, feedback_color)
-	draw_string(ThemeDB.fallback_font, Vector2(700, 735), LocalizationZhCn.text("controls"), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("9db1c4"))
 
-
-func _draw_reward_screen() -> void:
-	draw_string(ThemeDB.fallback_font, Vector2(430, 150), "选择一枚桌边徽章", HORIZONTAL_ALIGNMENT_LEFT, -1, 30, Color("f5cf72"))
-	for index in run_controller.state.reward_choices.size():
-		var badge := BadgeCatalog.get_badge(run_controller.state.reward_choices[index])
-		var rect := Rect2(285 + index * 280, 230, 240, 260)
-		draw_rect(rect, Color("13283a"), true)
-		draw_rect(rect, Color("8fd7cf"), false, 3)
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 55), "%d · %s" % [index + 1, badge.name], HORIZONTAL_ALIGNMENT_LEFT, 195, 22, Color("dceaf7"))
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 100), "流派：%s" % _build_name(badge.build), HORIZONTAL_ALIGNMENT_LEFT, 195, 16, Color("8fd7cf"))
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 145), "定位：%s" % _role_name(badge.role), HORIZONTAL_ALIGNMENT_LEFT, 195, 16, Color("9db1c4"))
-		draw_string(ThemeDB.fallback_font, rect.position + Vector2(24, 220), "点击卡片或按 %d" % [index + 1], HORIZONTAL_ALIGNMENT_LEFT, 195, 14, Color("f5cf72"))
-
-func _draw_run_summary() -> void:
-	draw_string(ThemeDB.fallback_font, Vector2(430, 240), "巡回胜利", HORIZONTAL_ALIGNMENT_LEFT, -1, 46, Color("6ff0aa"))
-	draw_string(ThemeDB.fallback_font, Vector2(400, 310), "三张球桌全部达标 · 已装备 %d 枚徽章" % run_controller.state.badges.size(), HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("dceaf7"))
-	_draw_button(Rect2(500, 390, 260, 50), "相同种子重新开始 [R]", true)
-
-func _build_name(id: String) -> String:
-	return {"pure_combo":"纯净组合","rail_chain":"撞库连锁","wall_risk":"功能墙冒险"}.get(id,id)
-
-func _role_name(id: String) -> String:
-	return {"starter":"启动器","core":"核心件","amplifier":"放大器","finisher":"收尾件","growth":"成长件"}.get(id,id)
 
 func _draw_preview() -> void:
 	if not _can_aim() or not preview.get("ok", false):
@@ -356,44 +656,3 @@ func _draw_balls() -> void:
 		draw_circle(center, ball.radius, color)
 		draw_circle(center, ball.radius + (4.0 if state == "hand" else 0.0), Color("f4c95d") if state == "hand" else Color("1b2734"), false, 3.0)
 		draw_string(ThemeDB.fallback_font, center + Vector2(-7, 6), "C" if ball.kind == "cue" else str(ball.number), HORIZONTAL_ALIGNMENT_CENTER, 14, 16, Color("102030"))
-
-
-func _draw_side_panel() -> void:
-	var state := controller.state
-	var x := 1080.0
-	draw_string(ThemeDB.fallback_font, Vector2(x, 90), "%s  %d" % [LocalizationZhCn.text("hud.target"), state.target_score], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("9db1c4"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 125), "%s  %d" % [LocalizationZhCn.text("hud.score"), state.score], HORIZONTAL_ALIGNMENT_LEFT, -1, 24, Color("f5cf72"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 160), "%s  %d" % [LocalizationZhCn.text("hud.strokes"), state.strokes_remaining], HORIZONTAL_ALIGNMENT_LEFT, -1, 18, Color("dceaf7"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 205), "%s %d/5" % [LocalizationZhCn.text("hud.hand"), state.hand.size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color("8fd7cf"))
-	for index in 5:
-		var rect := Rect2(x + (index % 3) * 78, 225 + (index / 3) * 75, 66, 60)
-		draw_rect(rect, Color("132334"), true)
-		draw_rect(rect, Color("f5cf72") if state.combo.participant_indices.has(index) else Color("54677b"), false, 2.0)
-		if index < state.hand.size():
-			var slot: HandSlot = state.hand[index]
-			draw_circle(rect.get_center() - Vector2(0, 7), 16, COLOR_MAP.get(slot.color_id, Color.WHITE))
-			draw_string(ThemeDB.fallback_font, rect.get_center() + Vector2(-5, 0), str(slot.number), HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("102030"))
-			draw_string(ThemeDB.fallback_font, rect.position + Vector2(5, 54), "副本" if not slot.has_physical_ball else "球#%d" % slot.physical_ball_id, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color("9db1c4"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 390), "%s  %s" % [LocalizationZhCn.text("hud.best"), LocalizationZhCn.combo_name(str(state.combo.type))], HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color("dceaf7"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 420), "%d × %d = %d" % [state.combo.number_sum, state.combo.multiplier, state.combo.score], HORIZONTAL_ALIGNMENT_LEFT, -1, 20, Color("f5cf72"))
-	_draw_button(Rect2(x, 500, 120, 42), "%s [S]" % LocalizationZhCn.text("action.settle"), legal_actions().has("settle"))
-	_draw_button(Rect2(x + 130, 500, 110, 42), "%s [K]" % LocalizationZhCn.text("action.keep"), legal_actions().has("keep"))
-	_draw_button(Rect2(x, 555, 240, 38), "%s [R]" % LocalizationZhCn.text("action.reset"), true)
-	draw_string(ThemeDB.fallback_font, Vector2(x, 630), "%s %d · %s" % [LocalizationZhCn.text("hud.power"), power_level, LocalizationZhCn.text(MODE_KEYS[assistance_index])], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("9db1c4"))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 655), "%s · %s" % [LocalizationZhCn.text("hud.phase"), LocalizationZhCn.phase_name(state.phase)], HORIZONTAL_ALIGNMENT_LEFT, -1, 13, Color("9db1c4"))
-	var badge_names: Array[String] = []
-	for id: String in run_controller.state.badges:
-		var badge: Dictionary = BadgeCatalog.get_badge(id)
-		badge_names.append(str(badge.get("name", id)))
-	draw_string(ThemeDB.fallback_font, Vector2(x, 680), "徽章 · %s" % (" / ".join(badge_names) if not badge_names.is_empty() else "暂无"), HORIZONTAL_ALIGNMENT_LEFT, 250, 11, Color("f5cf72"))
-	var tool_names: Array[String] = []
-	for id: String in run_controller.state.tools.keys():
-		var tool: Dictionary = ToolCatalog.get_tool(id)
-		tool_names.append("%s×%d" % [str(tool.get("name", id)), int(run_controller.state.tools[id])])
-	draw_string(ThemeDB.fallback_font, Vector2(x, 705), "道具 [Q] · %s" % (" / ".join(tool_names) if not tool_names.is_empty() else "暂无"), HORIZONTAL_ALIGNMENT_LEFT, 250, 11, Color("8fd7cf"))
-
-
-func _draw_button(rect: Rect2, label: String, enabled: bool) -> void:
-	draw_rect(rect, Color("214157") if enabled else Color("17212b"), true)
-	draw_rect(rect, Color("8fd7cf") if enabled else Color("44515e"), false, 2.0)
-	draw_string(ThemeDB.fallback_font, rect.position + Vector2(10, 27), label, HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("dceaf7") if enabled else Color("657383"))

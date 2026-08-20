@@ -4,8 +4,11 @@ config_version=5
 
 [application]
 config/name="Five Ball Grand Slam"
-run/main_scene="res://scenes/technical_table.tscn"
+run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.7")
+
+[autoload]
+GameSession="*res://src/ui/game_session.gd"
 
 [display]
 window/size/viewport_width=1365
