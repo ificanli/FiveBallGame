@@ -10,6 +10,9 @@ signal reset_requested
 signal tool_requested
 signal pause_requested
 signal badge_requested
+signal mode_toggled
+signal shoot_requested
+signal nudge_requested(step: int)
 
 var target_label: Label
 var score_label: Label
@@ -29,6 +32,10 @@ var keep_button: Button
 var reset_button: Button
 var tool_button: Button
 var pause_button: Button
+var mode_button: Button
+var nudge_left_button: Button
+var nudge_right_button: Button
+var shoot_button: Button
 
 
 func _init() -> void:
@@ -130,6 +137,24 @@ func _build() -> void:
 	row2.add_child(tool_button)
 	row2.add_child(pause_button)
 
+	mode_button = UiTheme.make_button("", 13)
+	mode_button.pressed.connect(func() -> void: mode_toggled.emit())
+	column.add_child(mode_button)
+
+	var fine_row := HBoxContainer.new()
+	fine_row.add_theme_constant_override("separation", 6)
+	column.add_child(fine_row)
+	nudge_left_button = UiTheme.make_button("←", 16)
+	nudge_right_button = UiTheme.make_button("→", 16)
+	nudge_left_button.pressed.connect(func() -> void: nudge_requested.emit(-1))
+	nudge_right_button.pressed.connect(func() -> void: nudge_requested.emit(1))
+	fine_row.add_child(nudge_left_button)
+	fine_row.add_child(nudge_right_button)
+	shoot_button = UiTheme.make_button(LocalizationZhCn.text("action.shoot_now"), 14)
+	shoot_button.pressed.connect(func() -> void: shoot_requested.emit())
+	fine_row.add_child(shoot_button)
+	_refresh_input_row()
+
 
 func refresh(view: Dictionary) -> void:
 	target_label.text = "%s  %d" % [LocalizationZhCn.text("hud.target"), int(view.get("target", 0))]
@@ -179,6 +204,17 @@ func refresh(view: Dictionary) -> void:
 
 	phase_label.text = "%s · %s" % [LocalizationZhCn.text("hud.phase"), LocalizationZhCn.phase_name(str(view.get("phase", "")))]
 	power_label.text = "%s %d · %s" % [LocalizationZhCn.text("hud.power"), int(view.get("power", 0)), str(view.get("assist", ""))]
+	_refresh_input_row()
+	shoot_button.disabled = not actions.has("shoot")
+
+
+func _refresh_input_row() -> void:
+	var mode: String = GameSession.input_mode
+	mode_button.text = LocalizationZhCn.format("input.mode.toggle", [LocalizationZhCn.text("input.mode." + mode)])
+	var fine: bool = mode == "fine"
+	nudge_left_button.visible = fine
+	nudge_right_button.visible = fine
+	shoot_button.visible = fine
 
 
 func _ball_color(color_id: String) -> Color:

@@ -40,3 +40,14 @@
 - [x] 6.1 Re-run full suite (93/93), golden replay smoke, M3 run replay (3×20 zero drift), Windows export + headless launch.
 - [ ] 6.2 Human QA on exported Windows build: menus, reward, tool, badge replace, settle/keep/bust, tutorial, both resolutions.
 - [ ] 6.3 Record Gate I evidence and product-owner acceptance; do not auto-start next milestone.
+
+## 7. Shot input modes (web-prototype parity)
+
+- [x] 7.1 Add GameSession input_mode (drag/fine) persisted to user://settings.cfg with default drag.
+- [x] 7.2 Rework technical_table input: drag mode (press-drag-release, right-click/Esc cancel, dead zone, power snap to 1–5) and fine mode (mouse aim, click aims without firing, 0.5° nudge buttons, shoot button).
+- [x] 7.3 Add drag visuals: drag line, power level number beside cue, first-contact ghost ball from preview.first_event.
+- [x] 7.4 Add always-visible 5-step power gauge with current level highlight.
+- [x] 7.5 Add HUD controls: mode toggle, nudge left/right, shoot button; fine-mode visibility toggling.
+- [x] 7.6 Add Chinese copy for both modes (feedback.drag_ready/fine_ready/drag_cancelled, controls.drag/fine, action.shoot_now).
+- [x] 7.7 Unit tests: drag mapping (direction + power snap + max clamp), mode toggle persistence, fine click aims without shooting (96/96 green).
+- [ ] 7.8 Human QA on exported build: both modes feel correct and switchable; persistence across restart (HUMAN_QA).

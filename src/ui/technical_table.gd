@@ -2,6 +2,8 @@ class_name TechnicalTable
 extends Control
 
 const TABLE_RECT := Rect2(55.0, 75.0, 1000.0, 620.0)
+const DRAG_MAX_DISTANCE := 260.0
+const DRAG_DEAD_ZONE_RATIO := 0.10
 const COLOR_MAP := {
 	"red": Color("e85d5d"), "blue": Color("4c86e8"),
 	"yellow": Color("e6b94f"), "green": Color("51b977"), "": Color("f2eee4")
@@ -24,6 +26,11 @@ var playback_elapsed := 0.0
 var display_positions: Dictionary = {}
 var feedback_text := LocalizationZhCn.text("feedback.ready")
 var feedback_color := Color("8fd7cf")
+
+# 输入模式: "drag" = 拉杆出手, "fine" = 精细瞄准 (仅影响输入流程, 不进入规则/回放)
+var input_mode := "drag"
+var drag_active := false
+var drag_current_pos := Vector2.ZERO
 
 # M3.5 UI panels
 var hud: HudPanel
@@ -49,6 +56,7 @@ func _ready() -> void:
 	focus_mode = Control.FOCUS_ALL
 	grab_focus()
 	_build_ui()
+	input_mode = GameSession.input_mode
 	start_run_same_seed()
 	print("M3_RUN_READY seed=%d rules=%s" % [seed, RunSnapshot.RULES_VERSION])
 
@@ -64,6 +72,9 @@ func _build_ui() -> void:
 	hud.tool_requested.connect(_open_tool_selector)
 	hud.pause_requested.connect(_open_pause)
 	hud.badge_requested.connect(func() -> void: _open_badge_panel("manage"))
+	hud.mode_toggled.connect(_toggle_input_mode)
+	hud.shoot_requested.connect(shoot)
+	hud.nudge_requested.connect(_nudge)
 
 	_modal_overlay = UiTheme.make_modal_overlay()
 	_modal_overlay.visible = false
@@ -119,7 +130,9 @@ func _gui_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
 			KEY_ESCAPE:
-				if _active_modal != null:
+				if drag_active:
+					_cancel_drag()
+				elif _active_modal != null:
 					_close_modal()
 				elif _pending_tool_id != "":
 					_cancel_tool_target()
@@ -138,7 +151,7 @@ func _gui_input(event: InputEvent) -> void:
 					_refresh_preview()
 					_sync_ui()
 			KEY_SPACE, KEY_ENTER:
-				if _active_modal == null:
+				if _active_modal == null and not drag_active:
 					shoot()
 			KEY_S:
 				if _active_modal == null:
@@ -161,21 +174,36 @@ func _gui_input(event: InputEvent) -> void:
 					_refresh_preview()
 					_sync_ui()
 			KEY_LEFT:
-				if _can_aim() and _active_modal == null:
-					aim_direction = aim_direction.rotated(deg_to_rad(-0.5))
-					_refresh_preview()
+				if _can_aim() and _active_modal == null and not drag_active:
+					_nudge(-1)
 			KEY_RIGHT:
-				if _can_aim() and _active_modal == null:
-					aim_direction = aim_direction.rotated(deg_to_rad(0.5))
-					_refresh_preview()
-	elif event is InputEventMouseMotion and _can_aim() and _active_modal == null:
-		var cue := snapshot.find_ball(1)
-		var direction: Vector2 = (event as InputEventMouseMotion).position - TABLE_RECT.position - cue.position
-		if direction.length_squared() > 4.0:
-			aim_direction = direction.normalized()
-			_refresh_preview()
-	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		_handle_click((event as InputEventMouseButton).position)
+				if _can_aim() and _active_modal == null and not drag_active:
+					_nudge(1)
+	elif event is InputEventMouseMotion and _active_modal == null:
+		if drag_active and _can_aim():
+			drag_current_pos = (event as InputEventMouseMotion).position
+			_update_drag(drag_current_pos)
+		elif input_mode == "fine" and _can_aim():
+			_aim_at((event as InputEventMouseMotion).position)
+	elif event is InputEventMouseButton:
+		var mouse := event as InputEventMouseButton
+		if mouse.button_index == MOUSE_BUTTON_LEFT and mouse.pressed:
+			if _pending_tool_id != "":
+				_handle_tool_target_click(mouse.position)
+				return
+			if not _can_aim() or _active_modal != null:
+				return
+			if input_mode == "drag":
+				if TABLE_RECT.has_point(mouse.position):
+					drag_active = true
+					drag_current_pos = mouse.position
+					_update_drag(drag_current_pos)
+			else:
+				_aim_at(mouse.position)
+		elif mouse.button_index == MOUSE_BUTTON_LEFT and not mouse.pressed and drag_active:
+			_finish_drag()
+		elif mouse.button_index == MOUSE_BUTTON_RIGHT and mouse.pressed and drag_active:
+			_cancel_drag()
 
 
 func start_run_same_seed() -> void:
@@ -403,17 +431,70 @@ func _cancel_tool_target() -> void:
 	queue_redraw()
 
 
-func _handle_click(position: Vector2) -> void:
-	if _active_modal != null:
+func _aim_at(screen_pos: Vector2) -> void:
+	if snapshot == null or not _can_aim():
 		return
-	if _pending_tool_id != "":
-		_handle_tool_target_click(position)
+	var cue := snapshot.find_ball(1)
+	if cue == null:
 		return
-	if run_controller != null and run_controller.state.phase == "reward":
+	var direction: Vector2 = screen_pos - TABLE_RECT.position - cue.position
+	if direction.length_squared() > 4.0:
+		aim_direction = direction.normalized()
+		_refresh_preview()
+
+
+func _nudge(step: int) -> void:
+	aim_direction = aim_direction.rotated(deg_to_rad(0.5 * step))
+	_refresh_preview()
+
+
+func _toggle_input_mode() -> void:
+	_cancel_drag()
+	var next: String = "fine" if GameSession.input_mode == "drag" else "drag"
+	GameSession.set_input_mode(next)
+	input_mode = next
+	feedback_text = LocalizationZhCn.text("feedback.drag_ready" if next == "drag" else "feedback.fine_ready")
+	feedback_color = Color("8fd7cf")
+	_sync_ui()
+	queue_redraw()
+
+
+func _update_drag(mouse_pos: Vector2) -> void:
+	if snapshot == null or not _can_aim():
 		return
-	if not _can_aim():
+	var cue := snapshot.find_ball(1)
+	if cue == null:
+		return
+	var drag_vec: Vector2 = cue.position - (mouse_pos - TABLE_RECT.position)
+	if drag_vec.length_squared() > 1.0:
+		aim_direction = drag_vec.normalized()
+	var ratio := clampf(drag_vec.length() / DRAG_MAX_DISTANCE, 0.0, 1.0)
+	power_level = clampi(int(ratio * 5.0) + 1, 1, 5)
+	_refresh_preview()
+	_sync_ui()
+	queue_redraw()
+
+
+func _finish_drag() -> void:
+	drag_active = false
+	queue_redraw()
+	if snapshot == null or not _can_aim():
+		return
+	var cue := snapshot.find_ball(1)
+	if cue == null:
+		return
+	var drag_len: float = (drag_current_pos - TABLE_RECT.position).distance_to(cue.position)
+	if drag_len < DRAG_MAX_DISTANCE * DRAG_DEAD_ZONE_RATIO:
+		feedback_text = LocalizationZhCn.text("feedback.drag_cancelled")
+		feedback_color = Color("9db1c4")
+		queue_redraw()
 		return
 	shoot()
+
+
+func _cancel_drag() -> void:
+	drag_active = false
+	queue_redraw()
 
 
 func _handle_tool_target_click(position: Vector2) -> void:
@@ -623,6 +704,8 @@ func _draw() -> void:
 		_draw_preview()
 		_draw_walls()
 		_draw_balls()
+		_draw_drag_assist()
+	_draw_power_gauge()
 	draw_string(ThemeDB.fallback_font, Vector2(55, 735), feedback_text, HORIZONTAL_ALIGNMENT_LEFT, 700, 18, feedback_color)
 
 
@@ -656,3 +739,33 @@ func _draw_balls() -> void:
 		draw_circle(center, ball.radius, color)
 		draw_circle(center, ball.radius + (4.0 if state == "hand" else 0.0), Color("f4c95d") if state == "hand" else Color("1b2734"), false, 3.0)
 		draw_string(ThemeDB.fallback_font, center + Vector2(-7, 6), "C" if ball.kind == "cue" else str(ball.number), HORIZONTAL_ALIGNMENT_CENTER, 14, 16, Color("102030"))
+
+
+func _draw_drag_assist() -> void:
+	if not drag_active or snapshot == null:
+		return
+	var cue := snapshot.find_ball(1)
+	if cue == null:
+		return
+	var cue_center: Vector2 = TABLE_RECT.position + cue.position
+	draw_line(drag_current_pos, cue_center, Color(1, 1, 1, 0.32), 2.0, true)
+	var first_event: Dictionary = preview.get("first_event", {}) if preview.get("ok", false) else {}
+	if not first_event.is_empty():
+		var contact: Dictionary = first_event.get("point", {})
+		if not contact.is_empty():
+			draw_circle(TABLE_RECT.position + Vector2(contact.x, contact.y), cue.radius, Color(1, 1, 1, 0.26))
+	draw_string(ThemeDB.fallback_font, cue_center + Vector2(-12, -32), str(power_level), HORIZONTAL_ALIGNMENT_CENTER, 22, 26, Color("f5cf72"))
+
+
+func _draw_power_gauge() -> void:
+	if not _can_aim():
+		return
+	var origin: Vector2 = Vector2(75, 700)
+	var cell := Vector2(34.0, 16.0)
+	for level in 5:
+		var rect := Rect2(origin + Vector2(level * (cell.x + 6), 0), cell)
+		var active: bool = level + 1 == power_level
+		draw_rect(rect, Color("f5cf72") if active else Color("2a3b4d"), true)
+		draw_rect(rect, Color("8a9ab0"), false, 1.0)
+		draw_string(ThemeDB.fallback_font, rect.position + Vector2(11, 12), str(level + 1), HORIZONTAL_ALIGNMENT_CENTER, 18, 14, Color("102030"))
+	draw_string(ThemeDB.fallback_font, origin + Vector2(0, -4), LocalizationZhCn.text("hud.power"), HORIZONTAL_ALIGNMENT_LEFT, -1, 12, Color("9db1c4"))
