@@ -37,9 +37,3 @@ M3.5 为三条打法提供肉眼可辨的视觉标识、完整中文说明与流
 - **WHEN** 真人观看隐藏分数 UI 的三套代表性击球录像
 - **THEN** 验收记录 SHALL 判断是否能仅凭击球选择识别流派，并记录结论为人工证据
 
-### Requirement: Balance tuning is evidence-led and reversible
-平衡微调 SHALL 由确定性代理的反事实对照（同一桌面的“直取”与“流派路线”触发差异）产出候选，逐项记录调整前后数值；不得为抬高机器胜率而堆无条件强卡。
-
-#### Scenario: A balance candidate is recorded
-- **WHEN** 代理发现某流派路线触发显著低于或高于预期
-- **THEN** SHALL 记录候选调整与反事实证据，经产品负责人确认后方可落库

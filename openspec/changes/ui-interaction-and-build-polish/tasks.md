@@ -33,8 +33,7 @@
 
 - [ ] 5.1 Add UI-only build identity constants (color + label) for pure_combo / rail_chain / wall_risk; reuse in reward, badge, settlement detail, statistics.
 - [ ] 5.2 Verify identity matches real trigger conditions; reject decorative mismatches.
-- [ ] 5.3 Run counterfactual route fixtures for three builds and record candidate balance adjustments without changing values.
-- [ ] 5.4 Record hidden-score build recordings; product owner identifies builds by shot choices only; automated agent must not substitute this verdict.
+- [ ] 5.3 Record hidden-score build recordings; product owner identifies builds by shot choices only; automated agent must not substitute this verdict. (Balance value tuning is deferred to the post-playtest iteration.)
 
 ## 6. Regression and Gate I
 
